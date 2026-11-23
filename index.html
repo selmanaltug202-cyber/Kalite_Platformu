@@ -18,6 +18,23 @@
         }
       }
     }
+function testSonucunuKaydet(temsilciAdi, dogruSayisi, yanlisSayisi, puan) {
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfA-fE26piuN317Wgq_t7PvaDM6eI39QjtLFXOtnWpR0ddFqq2q8IQb7dY52pedM1e/exec";
+
+  return fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      temsilci: temsilciAdi,
+      dogru: dogruSayisi,
+      yanlis: yanlisSayisi,
+      puan: puan
+    })
+  });
+}
   </script>
   <style>
     body {
