@@ -3,877 +3,1243 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VakıfBank Bankacılık Skili — İnteraktif Hata Analizi & Test Platformu</title>
+  <title>VakıfBank Bankacılık Skili — Çağrı Kalite &amp; Pekiştirme Platformu</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            vbYellow: '#FDB913',
-            vbYellowSoft: '#FFFBEB',
-            vbDark: '#1A1A1A',
-            vbSlate: '#2D3748'
+            vbGold: '#F3A518',
+            vbGoldSoft: '#FFFBEB',
+            vbNavy: '#0F2342',
+            vbNavyDark: '#09162B',
+            vbSlate: '#334155'
           }
         }
       }
-    }
-function testSonucunuKaydet(temsilciAdi, dogruSayisi, yanlisSayisi, puan) {
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfA-fE26piuN317Wgq_t7PvaDM6eI39QjtLFXOtnWpR0ddFqq2q8IQb7dY52pedM1e/exec";
-
-  return fetch(APPS_SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      temsilci: temsilciAdi,
-      dogru: dogruSayisi,
-      yanlis: yanlisSayisi,
-      puan: puan
-    })
-  });
-}
+    };
   </script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     body {
-      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f8fafc;
-      color: #1e293b;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f1f5f9;
+      color: #0F2342;
     }
-    .tab-active {
-      background-color: #1A1A1A;
-      color: #FDB913;
-      border-bottom: 3px solid #FDB913;
+    .nav-tab-active {
+      background-color: #0F2342;
+      color: #F3A518;
+      border-bottom: 3px solid #F3A518;
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- Üst Kurumsal Header -->
-  <header class="bg-white border-b-4 border-vbYellow shadow-sm sticky top-0 z-30">
+  <!-- Kurumsal Üst Başlık ve Navigasyon -->
+  <header class="bg-white border-b-4 border-vbGold shadow-sm sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <!-- Gömülü Temiz VakıfBank SVG Logosu -->
       <div class="flex items-center gap-3">
-        <img
-          src="https://lh3.googleusercontent.com/gg-dl/AHiVA1kMVUms8HHyNLYYJuSn0yVY7YqgrvAIsbzAs1CgxoMTrCa9JzdrkWK9AOF0tZa3IGcCNwFlL9eWCa7MyZ6ikQff-Npqh8MUXTl9qxr1D5j8pmyLkwFzgAcCFfzHP9s0WfoEb0gYHouR6txz0eb0patQSBhkXPNUqtiDlYK2B6qG__MRWA"
-          alt="VakıfBank Logo"
-          class="h-9 w-auto object-contain"
-        />
-        <div class="border-l border-slate-200 pl-3">
-          <h1 class="text-base sm:text-lg font-extrabold text-vbDark leading-tight">
-            Bankacılık Skili — Kalite &amp; Pekiştirme Platformu
-          </h1>
-          <p class="text-xs text-slate-500">12–19 Kasım 2026 Çağrı Dinleme Hataları, Doğru Uygulamalar ve İnteraktif Test</p>
+        <div class="flex items-center gap-2.5 select-none">
+          <svg width="42" height="42" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="VakıfBank Amblem">
+            <rect x="2" y="2" width="44" height="44" rx="11" fill="#0F2342" />
+            <path d="M11 13H17.2L24 30.8L30.8 13H37L26.8 37H21.2L11 13Z" fill="#F3A518" />
+            <path d="M17.5 11H30.5L28.5 15.5H19.5L17.5 11Z" fill="#FFFFFF" fill-opacity="0.9" />
+          </svg>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-lg sm:text-xl font-black tracking-tight text-vbNavy">VakıfBank</span>
+              <span class="text-[11px] font-bold uppercase tracking-wider bg-vbGoldSoft text-vbNavy border border-amber-300 px-2 py-0.5 rounded">
+                Bankacılık Skili
+              </span>
+            </div>
+            <p class="text-xs text-slate-500">Çağrı Kalite Rehberi, Kritik Prosedürler &amp; Pekiştirme Testi</p>
+          </div>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 text-xs font-semibold">
-        <span class="bg-vbYellowSoft text-vbDark border border-amber-300 px-3 py-1.5 rounded-full">
-          24 Aktif Temsilci
+      <!-- Aktif Temsilci ve Skor Göstergesi -->
+      <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+        <span id="activeRepBadge" class="bg-vbGoldSoft text-vbNavy border border-amber-300 px-3 py-1.5 rounded-full">
+          Temsilci: ALİCAN GÜN
         </span>
-        <span id="headerProgressBadge" class="bg-vbDark text-vbYellow px-3 py-1.5 rounded-full">
-          Test Skoru: - / -
+        <span id="headerScoreBadge" class="bg-vbNavy text-vbGold px-3 py-1.5 rounded-full">
+          Test: Hazır
         </span>
       </div>
     </div>
 
-    <!-- Ana Sekme Menüsü -->
+    <!-- Sekmeler -->
     <nav class="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto bg-slate-50 border-t border-slate-200">
-      <button onclick="switchTab('explorer')" id="tab-explorer" class="tab-active px-4 py-2.5 text-sm font-bold whitespace-nowrap transition">
-        1. Temsilci Hataları &amp; Doğruları
+      <button onclick="switchTab('guide')" id="tab-guide" class="nav-tab-active px-4 py-2.5 text-xs sm:text-sm font-bold whitespace-nowrap rounded-t-lg transition">
+        Hata &amp; Doğru Uygulama Rehberi
       </button>
-      <button onclick="switchTab('playbooks')" id="tab-playbooks" class="px-4 py-2.5 text-sm font-bold text-slate-600 hover:text-vbDark whitespace-nowrap transition">
-        2. Kritik Prosedür Rehberi
+      <button onclick="switchTab('procedures')" id="tab-procedures" class="px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-600 hover:text-vbNavy whitespace-nowrap rounded-t-lg transition">
+        Kritik Prosedürler
       </button>
-      <button onclick="switchTab('quiz')" id="tab-quiz" class="px-4 py-2.5 text-sm font-bold text-slate-600 hover:text-vbDark whitespace-nowrap transition">
-        3. İnteraktif Pekiştirme Testi
+      <button onclick="switchTab('quiz')" id="tab-quiz" class="px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-600 hover:text-vbNavy whitespace-nowrap rounded-t-lg transition">
+        İnteraktif Pekiştirme Testi
       </button>
     </nav>
   </header>
 
-  <!-- Ana İçerik Alanı -->
-  <main class="max-w-7xl w-full mx-auto px-4 py-6 flex-1">
+  <!-- Ana İçerik -->
+  <main class="max-w-7xl w-full mx-auto px-4 py-6 flex-1 space-y-6">
 
-    <!-- ==================== SEKMELER 1: TEMSİLCİ HATALARI VE DOĞRULARI ==================== -->
-    <section id="view-explorer" class="space-y-6">
-      <!-- Filtre & Özet Kartları -->
-      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="flex-1">
-          <label for="agentSelect" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-            Temsilci Seçin (24 Aktif Temsilci)
-          </label>
-          <select id="agentSelect" onchange="renderAgentDetail()" class="w-full md:w-96 rounded-lg border-slate-300 border px-3 py-2 text-sm font-semibold text-vbDark bg-slate-50 focus:ring-2 focus:ring-vbYellow focus:border-vbYellow">
-          </select>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2">
-          <button onclick="setTopicFilter('ALL')" id="filter-ALL" class="topic-btn bg-vbDark text-vbYellow px-3 py-1.5 rounded-lg text-xs font-bold">
-            Tüm Konular
-          </button>
-          <button onclick="setTopicFilter('TRANSFER')" id="filter-TRANSFER" class="topic-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold">
-            Para Transferi &amp; 3 Ekran
-          </button>
-          <button onclick="setTopicFilter('BLOKE_KART')" id="filter-BLOKE_KART" class="topic-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold">
-            Bloke, Kart &amp; Kayıp/Çalıntı
-          </button>
-          <button onclick="setTopicFilter('ONAY_ILETISIM')" id="filter-ONAY_ILETISIM" class="topic-btn bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold">
-            Onay, Aktarım &amp; İletişim
-          </button>
-        </div>
+    <!-- Ortak Temsilci Seçim Bandı (Tüm Sekmelerde ve Test Öncesinde Erişilebilir) -->
+    <section class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div class="flex-1">
+        <label for="repSelector" class="block text-xs font-extrabold uppercase tracking-wider text-vbNavy mb-1.5">
+          Aktif Müşteri Temsilcisi Seçimi (24 Temsilci)
+        </label>
+        <select id="repSelector" onchange="onRepresentativeChange()" class="w-full lg:w-[440px] rounded-lg border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-sm font-bold text-vbNavy focus:outline-none focus:ring-2 focus:ring-vbGold focus:border-vbGold">
+        </select>
       </div>
-
-      <!-- Seçili Temsilci Özet Paneli -->
-      <div id="agentSummaryCard" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
-
-      <!-- Hata - Doğru Uygulama Karşılaştırma Listesi -->
-      <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-extrabold text-vbDark border-l-4 border-vbYellow pl-3 uppercase tracking-wide">
-            Tespit Edilen Hatalar ve Doğru Çağrı Uygulamaları
-          </h2>
-          <button onclick="goToAgentQuiz()" class="bg-vbYellow hover:bg-amber-400 text-vbDark font-extrabold text-xs sm:text-sm px-4 py-2 rounded-lg shadow-sm transition">
-            Bu Konuları Testte Pekiştir →
-          </button>
-        </div>
-        <div id="agentMistakesContainer" class="space-y-4"></div>
-      </div>
+      <div id="repQuickStats" class="flex flex-wrap items-center gap-2 text-xs"></div>
     </section>
 
-    <!-- ==================== SEKMELER 2: KRİTİK PROSEDÜR REHBERİ ==================== -->
-    <section id="view-playbooks" class="hidden space-y-6">
-      <div class="bg-vbYellowSoft border-l-4 border-vbYellow p-4 rounded-r-xl">
-        <h2 class="text-base font-extrabold text-vbDark">Bankacılık Skili Altın Kurallar &amp; Doğru Pratikler</h2>
-        <p class="text-sm text-slate-700 mt-1">
-          Dinlenen 280 çağrıda en sık tekrarlanan hataların önüne geçmek için tüm temsilcilerin uygulaması gereken standart prosedürler aşağıda özetlenmiştir.
+    <!-- ==================== SEKME 1: HATA & DOĞRU UYGULAMA REHBERİ ==================== -->
+    <section id="view-guide" class="space-y-5">
+      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-sm font-extrabold uppercase tracking-wide text-vbNavy border-l-4 border-vbGold pl-3">
+            Konu Filtresi
+          </h2>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="setGuideFilter('ALL')" id="gfilter-ALL" class="gfilter-btn bg-vbNavy text-vbGold px-3 py-1.5 rounded-lg text-xs font-bold">
+            Tümü
+          </button>
+          <button onclick="setGuideFilter('TRANSFER')" id="gfilter-TRANSFER" class="gfilter-btn bg-slate-100 hover:bg-slate-200 text-vbNavy px-3 py-1.5 rounded-lg text-xs font-bold">
+            Para Transferi &amp; 3 Zorunlu Ekran
+          </button>
+          <button onclick="setGuideFilter('BLOKE_KART')" id="gfilter-BLOKE_KART" class="gfilter-btn bg-slate-100 hover:bg-slate-200 text-vbNavy px-3 py-1.5 rounded-lg text-xs font-bold">
+            Bloke, Kart, Şifre &amp; Kayıp/Çalıntı
+          </button>
+          <button onclick="setGuideFilter('ILETISIM_ONAY')" id="gfilter-ILETISIM_ONAY" class="gfilter-btn bg-slate-100 hover:bg-slate-200 text-vbNavy px-3 py-1.5 rounded-lg text-xs font-bold">
+            Onay, Aktarım, Sessizlik &amp; Hitap
+          </button>
+        </div>
+      </div>
+
+      <div id="guideCardsContainer" class="space-y-4"></div>
+    </section>
+
+    <!-- ==================== SEKME 2: KRİTİK PROSEDÜRLER ==================== -->
+    <section id="view-procedures" class="hidden space-y-5">
+      <div class="bg-vbNavy text-white rounded-xl p-5 border-l-8 border-vbGold shadow-sm">
+        <h2 class="text-lg font-extrabold text-vbGold">Bankacılık Skili Kritik İşlem &amp; İletişim Kuralları</h2>
+        <p class="text-sm text-slate-200 mt-1">
+          Çağrı dinleme kayıtlarında en sık karşılaşılan ekran, güvenlik, onay, aktarım ve bilgilendirme hatalarını önlemek için zorunlu uygulama standartları.
         </p>
       </div>
-      <div id="playbooksGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+      <div id="proceduresGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
     </section>
 
-    <!-- ==================== SEKMELER 3: İNTERAKTİF PEKİŞTİRME TESTİ ==================== -->
-    <section id="view-quiz" class="hidden space-y-6">
-      <!-- Test Kontrol Çubuğu -->
-      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 class="text-base font-extrabold text-vbDark">Çağrı Kalite Pekiştirme Sınavı</h2>
-          <p class="text-xs text-slate-500">Gerçek çağrı hatalarından türetilmiş senaryolarla doğrusunu pekiştirin.</p>
+    <!-- ==================== SEKME 3: İNTERAKTİF PEKİŞTİRME TESTİ ==================== -->
+    <section id="view-quiz" class="hidden space-y-5">
+      <!-- Test Ayar & İlerleme -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-extrabold text-vbNavy">Çağrı Kalite Pekiştirme Testi</h2>
+            <p class="text-xs text-slate-500">
+              Seçili temsilci (<strong id="quizSelectedRepName" class="text-vbNavy">ALİCAN GÜN</strong>) adına test çözün; tamamladığınızda sonuç otomatik olarak Google E-Tablolar'a gönderilir.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="quizTopicFilter" onchange="resetQuiz()" class="rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-bold text-vbNavy">
+              <option value="ALL">Tüm Konular (12 Soru)</option>
+              <option value="TRANSFER">Para Transferi &amp; 3 Ekran</option>
+              <option value="BLOKE_KART">Bloke, Kart, Şifre &amp; Kayıp/Çalıntı</option>
+              <option value="ILETISIM_ONAY">Onay, Aktarım, Sessizlik &amp; Hitap</option>
+            </select>
+            <button onclick="resetQuiz()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition">
+              Testi Yeniden Başlat
+            </button>
+          </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <select id="quizCategoryFilter" onchange="resetQuiz()" class="rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-bold text-vbDark">
-            <option value="ALL">Tüm Hata Kategorileri (12 Soru)</option>
-            <option value="TRANSFER">Para Transferi &amp; 3 Zorunlu Ekran</option>
-            <option value="BLOKE_KART">Bloke, Kart, Şifre &amp; Kayıp/Çalıntı</option>
-            <option value="ONAY_ILETISIM">Onay, Aktarım, Sessizlik &amp; Hitap</option>
-          </select>
-          <button onclick="resetQuiz()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition">
-            Testi Sıfırla
-          </button>
-        </div>
-      </div>
 
-      <!-- İlerleme Çubuğu -->
-      <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-        <div class="flex justify-between text-xs font-bold text-slate-600 mb-2">
-          <span id="quizProgressText">Soru 1 / 12</span>
-          <span id="quizScoreText">Doğru: 0 | Yanlış: 0</span>
+        <div class="flex justify-between text-xs font-bold text-slate-600 pt-1">
+          <span id="quizStepLabel">Soru 1 / 12</span>
+          <span id="quizLiveStats">Doğru: 0 | Yanlış: 0</span>
         </div>
         <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-          <div id="quizProgressBar" class="bg-vbYellow h-full transition-all duration-300" style="width: 8.3%"></div>
+          <div id="quizProgressFill" class="bg-vbGold h-full transition-all duration-300" style="width: 8%;"></div>
         </div>
       </div>
 
       <!-- Soru Kartı -->
-      <div id="quizQuestionCard" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-5"></div>
+      <div id="quizQuestionBox" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-5"></div>
 
-      <!-- Test Tamamlandı Özeti -->
-      <div id="quizSummaryCard" class="hidden bg-white rounded-xl border-2 border-vbYellow p-6 shadow-md text-center space-y-4"></div>
+      <!-- Test Tamamlanma Ekranı -->
+      <div id="quizResultBox" class="hidden bg-white rounded-xl border-2 border-vbGold p-6 shadow-md space-y-5"></div>
     </section>
 
   </main>
 
-  <footer class="bg-vbDark text-slate-300 text-xs py-4 px-4 mt-10">
+  <footer class="bg-vbNavy text-slate-200 text-xs py-4 px-4 mt-10 border-t-4 border-vbGold">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-      <span>VakıfBank Çağrı Merkezi • Bankacılık Skili Kalite &amp; Eğitim Platformu</span>
-      <span class="text-vbYellow font-semibold">24 Temsilci • Doğru Uygulama Pekiştirme Modülü</span>
+      <span>VakıfBank Çağrı Merkezi • Bankacılık Skili Kalite &amp; Eğitim Uygulaması</span>
+      <span class="text-vbGold font-semibold">24 Aktif Temsilci • Otomatik Sonuç Kaydı Aktif</span>
     </div>
   </footer>
 
   <script>
-    const AGENTS_DATA = [
+    const GOOGLE_SHEETS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzfA-fE26piuN317Wgq_t7PvaDM6eI39QjtLFXOtnWpR0ddFqq2q8IQb7dY52pedM1e/exec";
+
+    // Çağrı dinleme kayıtlarındaki 24 aktif temsilcinin tam verisi
+    const REPRESENTATIVES = [
       {
-        name: "ALİCAN GÜN", listened: 12, clean: 2, errors: 10, topTopic: "Para Transferleri (4 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Para transfer limit güncelleme sonrasında 'Yetki Ayarları', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranlarının tamamı 4 ayrı çağrıda kontrol edilmemiştir.", fix: "Limit güncelleme tamamlandığında istisnasız 'Yetki Ayarları', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları açılıp teyit edilmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "HESAP EK - TAKSİTLİ - ERKEN KAPAMA", error: "Çağrı açılışında 9. saniyede geç ses verilmiş; ek hesap taksitlendirme talebi etkin dinlenmeden yanlış ekran açılmış ve aktarılmaması gereken çağrı bankacılık skiline aktarılmıştır.", fix: "Çağrı açılır açılmaz karşılama yapılmalı, müşteri etkin dinlenmeli ve temsilci yetkisindeki işlemler başka skile aktarılmadan sonuçlandırılmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "HESAP VADELİ - VADESİZ - OYAK - ORTAK", error: "Hesaba yatan para için 'kredi kartına mı yatırdınız' denilmiş; vadesiz hesap hareketlerinde tarih filtresi ters uygulanarak müşteriye eski tarihli yanlış bilgi verilmiştir.", fix: "Müşterinin hangi hesaptan bahsettiği net dinlenmeli ve hesap hareketleri güncel tarihten itibaren doğru sıralamayla incelenmelidir." },
-          { tag: "BLOKE_KART", topic: "ADRES / TELEFON / MAIL GÜNCELLEME", error: "Ekran kontrolü yapılmadan ve müşteriden açık onay alınmadan eski e-posta adresi silinmiştir.", fix: "İletişim bilgisi silme veya güncelleme işlemlerinden önce ekran kontrolü yapılmalı ve müşteriden açık onay alınmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "HGS - OGS / YATIRIM / ACELECİ TUTUM", error: "HGS otomatik yükleme kart güncellemesi yapılabilecekken kredi kartı skiline aktarılmış; limit güncellemede onay beklenmeden işlem yapılmış ve 02:14'te müşteri sözü kesilmiştir.", fix: "Yetki dahilindeki işlemler tamamlanmalı, işlem öncesi onay alınmalı ve müşterinin sözü bitene kadar dinlenmelidir." }
+        name: "ALİCAN GÜN", listened: 12, clean: 2, errors: 10,
+        focus: "Para Transferi 3 Zorunlu Ekran (4 Hata) & Onay/Etkin Dinleme",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Para transfer limit güncelleme sonrasında 'Yetki Ayarları', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranlarının tamamı 4 ayrı çağrıda kontrol edilmemiştir.",
+            correct: "Limit güncelleme tamamlandıktan sonra mutlaka 'Yetki Ayarları', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları açılıp kontrol edilmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "HESAP EK - TAKSİTLİ - ERKEN KAPAMA",
+            error: "Çağrı açılışında 9. saniyede ses verilmiş; ek hesap taksitlendirme talebi etkin dinlenmeden farklı ekran açılmış ve aktarılmaması gereken çağrı bankacılık skiline aktarılmıştır.",
+            correct: "Çağrı açılır açılmaz karşılama yapılmalı, müşteri etkin dinlenmeli ve aktarılmaması gereken çağrılar ilgili ekrandan sonuçlandırılmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "HESAP VADELİ - VADESİZ - OYAK - ORTAK",
+            error: "Hesaba yatan para için 'kredi kartına mı yatırdınız' denilmiş; vadesiz hesap hareketlerinde tarih filtresi ters uygulanarak (en eski en başta) müşteriye eski tarihli yanlış bilgi verilmiştir.",
+            correct: "Müşterinin hangi hesabı kastettiği net dinlenmeli, tarih filtresi güncel tarihten başlayacak şekilde kontrol edilip doğru işlem bilgisi verilmelidir."
+          },
+          {
+            cat: "BLOKE_KART", topic: "ADRES / TELEFON / MAIL GÜNCELLEME",
+            error: "E-posta güncelleme bildiriminde ekran kontrolü yapılmamış ve müşteriden onay alınmadan eski e-posta silinmiştir.",
+            correct: "İlgili ekranlar kontrol edilmeli ve müşteriden açık onay alınmadan e-posta silme/güncelleme işlemi yapılmamalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "HGS - OGS / YATIRIM / ACELECİ TUTUM",
+            error: "HGS otomatik yükleme kart güncellemesi yapılabilecekken kredi kartı skiline aktarılmış; kıymetli maden limitinde onay beklenmeden işlem onaylanmış; 02:14'te müşteri sözü kesilmiştir.",
+            correct: "Yetki dahilindeki HGS güncellemesi yapılmalı, işlem öncesi onay alınmalı ve müşterinin sözü kesilmeden tamamlanması beklenmelidir."
+          }
         ]
       },
       {
-        name: "AYCAN EMER", listened: 8, clean: 5, errors: 3, topTopic: "Kredi Ödeme Planı (2 Hata)",
-        mistakes: [
-          { tag: "BLOKE_KART", topic: "KREDİ", error: "Kredi ödeme planı ekranında gecikmeli olan 4 taksit boyalı göründüğü için müşteriye '4 adet taksit ödemişsiniz' şeklinde hatalı bilgi verilmiştir (gerçekte 3 taksit ödenmiştir).", fix: "Ödeme planı ekranındaki renk/durum işaretleri dikkatle incelenmeli, ödenen ve gecikmeli taksit adetleri ayrı ayrı teyit edilerek paylaşılmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "BLOKE/ŞİFRE İNTERNET & MOBİL BANKACILIK", error: "Müşteriden açık onay alınmadan dijital şifre gönderimi yapılmıştır.", fix: "Dijital şifre gönderimi öncesinde müşteriden mutlaka onay alınmalı ve onay sonrası işlem tetiklenmelidir." }
+        name: "AYCAN EMER", listened: 8, clean: 5, errors: 3,
+        focus: "Kredi Ödeme Planı Ekran Okuma (2 Hata) & Onaylı Şifre",
+        cases: [
+          {
+            cat: "BLOKE_KART", topic: "KREDİ",
+            error: "Kredi ödeme planı ekranında gecikmeli olan 4 taksit boyalı göründüğü için müşteriye '4 adet taksit ödemişsiniz' şeklinde hatalı bilgi verilmiştir (gerçekte 3 taksit ödenmiştir).",
+            correct: "Ödeme planı ekranında gecikmeli ve ödenmiş taksitlerin görsel/durum ayrımı dikkatle incelenmeli, ödenen taksit adedi doğru teyit edilmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "BLOKE/ŞİFRE İNTERNET & MOBİL BANKACILIK",
+            error: "Müşteriden onay alınmadan dijital şifre gönderilmiştir.",
+            correct: "Dijital şifre gönderimi öncesinde müşteriden mutlaka onay alınmalı ve onay sonrası gönderim sağlanmalıdır."
+          }
         ]
       },
       {
-        name: "BÜŞRA ÇETİN", listened: 10, clean: 2, errors: 8, topTopic: "Bloke Hesap (3 Hata)",
-        mistakes: [
-          { tag: "BLOKE_KART", topic: "BLOKE HESAP", error: "İcra/kurum blokesinde borç ödense dahi blokeyi kurumun değil şubenin kaldıracağı kuralı atlanarak hatalı bilgi verilmiş; bloke süreçlerinde eksiklik yaşanmıştır.", fix: "Kurum/icra blokelerinin kurum tarafından değil, borç kapatıldıktan sonra şube tarafından kaldırıldığı net şekilde açıklanmalıdır." },
-          { tag: "BLOKE_KART", topic: "KREDİ KARTI KAYIP - ÇALINTI", error: "Kartını kaybeden müşteri bekletilmeden Kayıp/Çalıntı birimine aktarılması gerekirken çağrıda panik yapılmış ve yönlendirici sorular eksik kalmıştır.", fix: "Kayıp/çalıntı kart bildirimlerinde sakin ve net olunmalı, beklemeden Kayıp/Çalıntı birimine aktarım sağlanmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "KREDİ KARTI NA - TNA / DIŞ ARAMA / DİL", error: "25.000 TL nakit avans aktarımında gereksiz onay aranmış; dijital şifre tuşlamasında bilgilendirmeden konferansa aktarılmış; çağrıda 'Hee, Hı hı' gibi günlük ifadeler kullanılmıştır.", fix: "Aktarım scriptleri net uygulanmalı, konferans öncesi bilgilendirme yapılmalı ve 'Hee, Hı hı' yerine kurumsal hitap kullanılmalıdır." },
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ & SİM BLOKE", error: "Limit güncelleme sonrası 3 zorunlu ekran kontrol edilmemiş; SIM kart bloke kaldırma kanalları eksik aktarılmıştır.", fix: "Limit sonrası 3 ekran kontrol edilmeli ve SIM kart bloke kaldırma kanalları eksiksiz listelenmelidir." }
+        name: "BÜŞRA ÇETİN", listened: 10, clean: 2, errors: 8,
+        focus: "Bloke Hesap Mevzuatı (3 Hata) & Kayıp/Çalıntı Aktarımı",
+        cases: [
+          {
+            cat: "BLOKE_KART", topic: "BLOKE HESAP",
+            error: "İcra/kurum blokesinde borç ödense dahi blokeyi kurumun değil şubenin kaldıracağı kuralına aykırı bilgi verilmiş; bloke hesap süreçlerinde eksiklik yaşanmıştır.",
+            correct: "Hesap blokeleri kurum tarafından kaldırılmaz; borç ödemesi sonrası şube tarafından kaldırılır. Bloke tutarı ve nedeni doğru aktarılmalıdır."
+          },
+          {
+            cat: "BLOKE_KART", topic: "KREDİ KARTI KAYIP - ÇALINTI",
+            error: "Kartını kaybeden müşteri bekletilmeden Kayıp/Çalıntı birimine aktarılması gerekirken çağrıda fazla panik yapılmış ve yönlendirici sorular eksik kalmıştır.",
+            correct: "Kayıp kart bildirimlerinde sakin ve net olunmalı, beklemeden Kayıp/Çalıntı birimine aktarılmalı ve gerekli yönlendirici sorular sorulmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "KREDİ KARTI NA - TNA / DIŞ ARAMA / HİTAP",
+            error: "25.000 TL nakit avans aktarımında gereksiz onay aranmış; dijital şifre tuşlamasında bilgilendirmeden konferansa aktarılmış; 'Hee, Hı hı' gibi günlük ifadeler kullanılmıştır.",
+            correct: "Nakit avans aktarımında onay aranmadan standart aktarım scripti kullanılmalı, konferans öncesi bilgi verilmeli ve kurumsal hitap ('Hee, Hı hı' yerine) kullanılmalıdır."
+          },
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ & SİM BLOKE",
+            error: "Limit güncelleme sonrası 3 zorunlu ekran (Yetki Detay, Hesap İşlem Türü, Hesap Blokesi) kontrol edilmemiş; SIM kart bloke kaldırma kanalları eksik bırakılmıştır.",
+            correct: "Limit güncelleme sonrası 3 ekran kontrol edilmeli ve SIM kart bloke kaldırma kanalları eksiksiz paylaşılmalıdır."
+          }
         ]
       },
       {
-        name: "EDİBE DEMİR", listened: 12, clean: 7, errors: 5, topTopic: "Ezbere Bilgi & Pop-up Uyarıları",
-        mistakes: [
-          { tag: "BLOKE_KART", topic: "BANKOMAT KART YENİLEME - ŞİFRE - KURYE", error: "Blokeli hesaba bankomat kart yenilemede pop-up okunmadan ilerlenmiş ve 'TRY bankomat olarak ilerlenecektir' uyarısı atlanmıştır.", fix: "Kart yenileme/talep adımlarında ekrana gelen pop-up uyarıları mutlaka okunmalı ve ürün bilgisi müşteriye aktarılmalıdır." },
-          { tag: "BLOKE_KART", topic: "HESAP BLOKE & BLOKE SİM KART", error: "Bloke tutarı ile borç tutarı aynıymış gibi bilgi verilmiş; SIM kart bloke kaldırmada yalnızca şube ve ATM söylenmiştir.", fix: "Bloke tutarı ile borç tutarı ayrımı doğru yapılmalı; SIM kart bloke kaldırma kanalları eksiksiz sayılmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "KAREKOD İŞLEMLERİ & KREDİ", error: "ATM günlük çekme limiti ekran kontrolü yapılmadan ezbere söylenmiş; bireysel kredi detay talebinde yanlış şekilde bankacılık skiline aktarım yapılmıştır.", fix: "Limit bilgileri ilgili ekrandan teyit edilmeli; bireysel kredi detay taleplerinde genel bilgi verilip şubeye yönlendirilmelidir." }
+        name: "Edibe Demir", listened: 12, clean: 7, errors: 5,
+        focus: "Pop-up Uyarıları, Bloke/Borç Ayrımı & Ezbere Limit Bilgisi",
+        cases: [
+          {
+            cat: "BLOKE_KART", topic: "BANKOMAT KART YENİLEME - ŞİFRE - KURYE",
+            error: "Blokeli hesaba bankomat kart yenilemede pop-up okunmadan ilerlenmiş ve 'Kartınız TRY bankomat olarak ilerlenecektir' uyarısı atlanmıştır.",
+            correct: "Kart yenileme ekranındaki pop-up uyarıları okunmalı, kart kullanılabilirlik durumu ve TRY bankomat bilgisi doğru aktarılmalıdır."
+          },
+          {
+            cat: "BLOKE_KART", topic: "HESAP BLOKE & BLOKE SİM KART",
+            error: "'İlgili kurumla görüşüp bloke tutarını ödedikten sonra açılabilir' denilerek bloke tutarı ile borç tutarı aynı sayılmış; SIM kart bloke kaldırmada yalnızca şube ve ATM söylenmiştir.",
+            correct: "Bloke tutarı ile borç tutarı aynı değildir; doğru bilgi verilmeli ve SIM kart bloke kaldırma kanalları eksiksiz sayılmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "KAREKOD İŞLEMLERİ & KREDİ",
+            error: "ATM günlük çekme limiti ekran kontrolü yapılmadan ezbere söylenmiş; bireysel kredi talebinde genel bilgi verip şubeye yönlendirmek yerine bankacılık skiline aktarılmıştır.",
+            correct: "ATM limitleri ekrandan kontrol edilmeli; bireysel kredi detay taleplerinde genel bilgi verilip şubeye yönlendirilmelidir."
+          }
         ]
       },
       {
-        name: "ELİF ABAY", listened: 12, clean: 8, errors: 4, topTopic: "Güvenlik Onayı & Kayıp Kart Akışı",
-        mistakes: [
-          { tag: "BLOKE_KART", topic: "KART KAYIP/ÇALINTI - ŞÜPHELİ İŞLEM", error: "Kartının kaybolduğunu söyleyen müşterinin kartı açık görünmesine rağmen Kayıp/Çalıntı skiline aktarmak yerine iptal ekranından iptal edilmiştir.", fix: "Kayıp kart bildirimlerinde iptal ekranı yerine derhal Kayıp/Çalıntı birimine aktarım yapılmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "3. ŞAHIS ONAYI (DİĞER)", error: "Güvenlik 3. şahıs (oğlu) ile geçilmiş ancak oğlu üzerinden işlem yapılırken onay usulüne uygun alınmamıştır.", fix: "3. şahıs ile işlem yürütülürken gerekli onay ve güvenlik adımları eksiksiz tamamlanmalıdır." },
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ & YATIRIM", error: "Limit güncelleme sonrası 'Yetki Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları kontrol edilmemiştir.", fix: "Limit güncelleme sonrası 3 zorunlu ekran kontrol edilmeden çağrı kapatılmamalıdır." }
+        name: "ELİF ABAY", listened: 12, clean: 8, errors: 4,
+        focus: "Kayıp Kart Aktarımı & 3. Şahıs Onay Süreci",
+        cases: [
+          {
+            cat: "BLOKE_KART", topic: "KART KAYIP/ÇALINTI - ŞÜPHELİ İŞLEM",
+            error: "Kartının kaybolduğunu söyleyen müşterinin kartı ekranda açık görünmesine rağmen Kayıp/Çalıntı skiline aktarmak yerine iptal ekranından kart iptal edilmiştir.",
+            correct: "Kart kayıp bildirimlerinde normal iptal ekranı yerine bekletmeden Kayıp/Çalıntı birimine aktarım yapılmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "3. ŞAHIS ONAYI (DİĞER)",
+            error: "Güvenlik 3. şahıs (oğlu) ile geçilmiş ancak oğlu ile işlem yapılırken onay usulüne uygun alınmamıştır.",
+            correct: "3. şahıs ile işlem yürütülürken gerekli onay ve güvenlik adımları eksiksiz tamamlanmalıdır."
+          },
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ & YATIRIM",
+            error: "Limit güncelleme sonrası 'Yetki Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları kontrol edilmemiştir.",
+            correct: "Limit güncelleme sonrası 3 zorunlu ekran kontrol edilmelidir."
+          }
         ]
       },
       {
-        name: "ELİF ÇELEBİOĞLU", listened: 12, clean: 6, errors: 6, topTopic: "Para Transferleri & Ekran Kontrolü (3 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Ulaşmayan EFT/FAST için sorgu numarasıyla Giden FAST/EFT ekranına bakılmadan son işlemlerden 'onaylanmış' denmiş; iki çağrıda Yetki Ayarları ekranı en alta kaydırılmadan hızlıca geçilmiştir.", fix: "Sorgu numarası ile Giden EFT/FAST ekranı kontrol edilmeli; Yetki Ayarları ekranı en alta kadar indirilerek okunmalıdır." },
-          { tag: "BLOKE_KART", topic: "BLOKE HESAP", error: "Ekranda bloke tutarı görünmesine rağmen bloke tutarı için şubeye gidilmesi gerektiği söylenmiştir.", fix: "Ekranda görünen bloke tutarı müşteriye doğrudan paylaşılmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "KREDİ İŞLEMLERİ & DİĞER", error: "İnternet bankacılığından taksit ödeyemeyen müşteride sorunun kaynağı incelenmeden kanal ayarlarından internet bankacılığı aktif edilmiştir.", fix: "Hatanın kaynağı ekrandan tespit edildikten sonra ilgili çözüm uygulanmalıdır." }
+        name: "ELİF ÇELEBİOĞLU", listened: 12, clean: 6, errors: 6,
+        focus: "Giden FAST/EFT Sorgusu & Yetki Ayarları Kontrolü (3 Hata)",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Karşıya ulaşmayan transferde sorgu numarasıyla Giden FAST/EFT ekranına bakılmadan son işlemlerden 'onaylanmış' denmiş; limit sonrası ekranlar hızlı geçilip Yetki Ayarları en alta indirilmemiştir.",
+            correct: "Sorgu numarasıyla Giden FAST/EFT ekranından kontrol edilmeli, bekleyen işlem varsa hızlandırma talebi açılmalı; Yetki Ayarları ekranı en alta kadar indirilerek okunmalıdır."
+          },
+          {
+            cat: "BLOKE_KART", topic: "BLOKE HESAP",
+            error: "Ekranda bloke tutarı yazmasına rağmen müşteri talebi olan bloke tutarı için şubeye gitmesi gerektiği söylenmiştir.",
+            correct: "Ekranda görünen bloke tutarı müşteriye doğrudan paylaşılmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "KREDİ İŞLEMLERİ & DİĞER",
+            error: "İnternet bankacılığından taksit ödemesi yapamayan müşteride sorunun kaynağı netleştirilmeden kanal ayarlarından internet bankacılığı aktif edilmiştir.",
+            correct: "Önce hatanın nedeni ekrandan tespit edilmeli, ilgili ekran/işlem adımına göre çözüm sunulmalıdır."
+          }
         ]
       },
       {
-        name: "ESRA ÖZÜ ÇALIŞIR", listened: 12, clean: 6, errors: 6, topTopic: "Ek Hesap Kapatma & Kart Kurye (2'şer Hata)",
-        mistakes: [
-          { tag: "ONAY_ILETISIM", topic: "HESAP EK - TAKSİTLİ - ERKEN KAPAMA", error: "Ek hesap kapatma talebinde 'Otomatik Limit Artırım' ekranından limit artışı iptal edilerek 'ek hesabınız kapatılmıştır' denmiştir (2 kez).", fix: "Ek hesap kapatma işlemi ilgili ek hesap kapatma ekranından yapılmalı ve işlem sonucu doğrulanmalıdır." },
-          { tag: "BLOKE_KART", topic: "BANKOMAT KART YENİLEME - ŞİFRE - KURYE", error: "Kurye yönlendirmede '0202' hata kodunda talep açılmamış, kurye firması sorgulanmamış; kart şifre tuşlamasında konferansa aktarılmayıp 'kartınızda bloke var, şubeye gidin' denmiştir.", fix: "0202 hatasında 'Kuryedeki Bankomat Kartı Adrese/Şubeye Yönlendirilmesi' talebi açılmalı, kurye bilgisi sorgulanmalı ve geçici şifre/bloke durumu doğru kontrol edilmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "MÜŞTERİ DIŞ ARAMA & BLOKE HESAP", error: "TKŞ aktarımında 'anons sesinden sonra' denmemiş, dış arama nedeni boşken Kampanya skiline aktarılmış; onaysız Mobil Bankacılık linki gönderilmiştir.", fix: "TKŞ öncesi anons uyarısı yapılmalı, nedeni boş aramalarda tahmini aktarım yapılmamalı ve onaysız link gönderilmemelidir." }
+        name: "ESRA ÖZÜ ÇALIŞIR", listened: 12, clean: 6, errors: 6,
+        focus: "Ek Hesap Kapatma Ekranı (2 Hata) & Kart Kurye '0202' (2 Hata)",
+        cases: [
+          {
+            cat: "ILETISIM_ONAY", topic: "HESAP EK - TAKSİTLİ - ERKEN KAPAMA",
+            error: "Ek hesap kapatma talebinde 'Otomatik Limit Artırım' ekranından otomatik limit artışı iptal edilerek 'ek hesabınız kapatılmıştır' denmiştir (2 kez).",
+            correct: "Ek hesap kapatma işlemi ilgili ek hesap kapatma ekranından yapılmalı ve işlem sonucu doğrulanmalıdır."
+          },
+          {
+            cat: "BLOKE_KART", topic: "BANKOMAT KART YENİLEME - ŞİFRE - KURYE",
+            error: "Kurye yönlendirmede '0202' hata kodunda talep açılmamış, kurye firması sorgulanmamış; kart şifre tuşlamasında konferansa aktarılmayıp 'kartınızda bloke var, şubeye gidin' denmiştir.",
+            correct: "0202 hatasında 'Kuryedeki Bankomat Kartı Adrese/Şubeye Yönlendirilmesi' talebi açılmalı, kurye firması 'Kart Kurye/Şube Gönderim Sorgulama' ekranından paylaşılmalı ve geçici şifre/bloke durumu doğru kontrol edilmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "MÜŞTERİ DIŞ ARAMA & BLOKE HESAP",
+            error: "TKŞ aktarımında 'anons sesinden sonra' denmemiş, dış arama nedeni boşken Kampanya skiline aktarılmış; onaysız Mobil Bankacılık linki gönderilmiştir.",
+            correct: "TKŞ öncesi 'anons sesinden sonra' uyarısı yapılmalı, nedeni boş dış aramalarda tahmini Kampanya aktarımı yapılmamalı ve onaysız link gönderilmemelidir."
+          }
         ]
       },
       {
-        name: "GÜL BULUT", listened: 12, clean: 8, errors: 4, topTopic: "Hattan Düşen Müşteriye Dış Arama (2 Hata)",
-        mistakes: [
-          { tag: "ONAY_ILETISIM", topic: "HATTAN DÜŞEN MÜŞTERİYE DIŞ ARAMA YAPILMAMASI", error: "Görüşme sırasında hattan düşen müşteriye 2 çağrıda dış arama yapılmamıştır.", fix: "Hattan düşen müşteriye görüşme sonlandırılmadan mutlaka dış arama yapılmalıdır." },
-          { tag: "BLOKE_KART", topic: "BLOKE HESAP & BANKOMAT KART YENİLEME", error: "Bloke hesap ve bankomat kart yenileme süreçlerinde kontrol ve bilgilendirme adımlarında eksiklik yaşanmıştır.", fix: "Bloke ve kart yenileme ekranlarındaki tüm uyarı ve durum bilgileri eksiksiz kontrol edilmelidir." }
+        name: "GÜL BULUT", listened: 12, clean: 8, errors: 4,
+        focus: "Hattan Düşen Müşteriye Dış Arama (2 Hata)",
+        cases: [
+          {
+            cat: "ILETISIM_ONAY", topic: "HATTAN DÜŞEN MÜŞTERİYE DIŞ ARAMA YAPILMAMASI",
+            error: "Görüşme sırasında hattan düşen müşteriye 2 çağrıda dış arama yapılmamıştır.",
+            correct: "Hattan düşen müşteriye görüşme kapatılmadan mutlaka dış arama yapılmalıdır."
+          },
+          {
+            cat: "BLOKE_KART", topic: "BLOKE HESAP & BANKOMAT KART YENİLEME",
+            error: "Bloke hesap ve bankomat kart yenileme süreçlerinde ekran kontrol ve bilgilendirme adımlarında eksiklik yaşanmıştır.",
+            correct: "Bloke ve kart yenileme ekranlarındaki tüm uyarı ve durum bilgileri eksiksiz kontrol edilip paylaşılmalıdır."
+          }
         ]
       },
       {
-        name: "HAMZA AKAN", listened: 12, clean: 5, errors: 7, topTopic: "Kart Şifre SMS Formatı (2 Hata)",
-        mistakes: [
-          { tag: "BLOKE_KART", topic: "BANKOMAT KART YENİLEME - ŞİFRE - KURYE", error: "Güvenlik geçemeyen müşteriye kart şifresi için yalnızca şube ve ATM söylenmiş, SMS ile şifre alma formatı paylaşılmamıştır (2 kez).", fix: "Bankomat kart şifresi taleplerinde şube/ATM ile birlikte SMS ile şifre formatı da eksiksiz verilmelidir." },
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ & GÜVENLİK/KANAL AYARLARI", error: "Limit güncelleme sonrası 'Yetki Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları kontrol edilmemiş; güvenlik hatalı başlıktan geçilmiştir.", fix: "Güvenlik doğru başlıktan geçilmeli ve limit sonrası 3 zorunlu ekran kontrol edilmelidir." },
-          { tag: "BLOKE_KART", topic: "HARCAMA İTİRAZI - İPTALİ - İADESİ", error: "Bankomat karta gelecek iade için yalnızca vadesiz hesap hareketlerine bakılmış; 'Bankomat Kart Detay' ve 'Bankomat Kart Hareketleri' kontrol edilmemiştir.", fix: "Kart iadelerinde 'Bankomat Kart Detay' ve 'Bankomat Kart Hareketleri' ekranları mutlaka incelenmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "BLOKE HESAP & ETKİN DİNLEME", error: "'Ben nedenini bilebilseydim size söylerdim emin olun' ifadesi kullanılmış ve müşteri birden fazla kez tekrar ettirilmiştir.", fix: "Kurumsal ve empatik dil kullanılmalı, etkin dinleme ile müşteri tekrar ettirilmemelidir." }
+        name: "Hamza AKAN", listened: 12, clean: 5, errors: 7,
+        focus: "Kart Şifre SMS Formatı (2 Hata) & İade Ekranları",
+        cases: [
+          {
+            cat: "BLOKE_KART", topic: "BANKOMAT KART YENİLEME - ŞİFRE - KURYE",
+            error: "Güvenlik geçemeyen müşteriye bankomat kart şifresi için yalnızca şube ve ATM söylenmiş, SMS ile şifre formatı paylaşılmamıştır (2 kez).",
+            correct: "Bankomat kart şifresi taleplerinde şube ve ATM kanallarına ek olarak SMS format bilgisi de eksiksiz verilmelidir."
+          },
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ & GÜVENLİK/KANAL AYARLARI",
+            error: "Limit güncelleme sonrası 'Yetki Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları kontrol edilmemiş; güvenlik hatalı başlıktan geçilmiştir.",
+            correct: "Güvenlik doğru başlıktan geçilmeli ve limit sonrası 3 zorunlu ekran kontrol edilmelidir."
+          },
+          {
+            cat: "BLOKE_KART", topic: "HARCAMA İTİRAZI - İPTALİ - İADESİ",
+            error: "Bankomat karta gelecek iade için yalnızca vadesiz hesap hareketlerine bakılmış; 'Bankomat Kart Detay' ve 'Bankomat Kart Hareketleri' kontrol edilmemiştir.",
+            correct: "Bankomat kart iadelerinde 'Bankomat Kart Detay' ve 'Bankomat Kart Hareketleri' ekranları kontrol edilerek bilgi verilmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "BLOKE HESAP & ETKİN DİNLEME",
+            error: "'Ben nedenini bilebilseydim size söylerdim emin olun' ifadesi kullanılmış ve müşteri birden fazla kez tekrar ettirilmiştir.",
+            correct: "Kurumsal iletişim dili kullanılmalı, etkin dinleme ile müşteri tekrar ettirilmemelidir."
+          }
         ]
       },
       {
-        name: "HEDİYE ANŞİN", listened: 12, clean: 7, errors: 5, topTopic: "Para Transferleri Ekran Kontrolü (2 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Limit güncelleme sonrası 'Yetki Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranlarının tamamı/bir kısmı kontrol edilmemiştir (2 çağrı).", fix: "Limit güncelleme sonrasında 'Yetki Ayarları / Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları kontrol edilmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "1. EMİR İFADESİ KULLANIMI", error: "'Size cep imza gönderdim onaylamanız gerekiyor' şeklinde emir ifadesi kullanılmıştır.", fix: "Emir ifadesi yerine 'Onaylayabilir misiniz?' şeklinde nazik rica dili kullanılmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "KURUMSAL & DİĞER", error: "Kurumsal internet bankacılığına giremeyen müşteri aktarma/şube arasında yönlendirilirken çağrı hakimiyeti zayıf kalmış ve isim iki kez sorulmuştur.", fix: "Çağrı hakimiyeti korunmalı, müşterinin adı bir kez alınıp kayıt altına alınmalıdır." }
+        name: "Hediye ANŞİN", listened: 12, clean: 7, errors: 5,
+        focus: "Para Transferi 3 Ekran (2 Hata) & Emir İfadesi",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Limit güncelleme sonrası 'Yetki Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranlarının kontrolü eksik bırakılmıştır (2 çağrı).",
+            correct: "Limit güncelleme sonrasında 'Yetki Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları kontrol edilmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "1. EMİR İFADESİ KULLANIMI",
+            error: "'Size cep imza gönderdim onaylamanız gerekiyor' şeklinde emir ifadesi kullanılmıştır.",
+            correct: "Emir ifadesi yerine 'Onaylayabilir misiniz?' şeklinde rica ifadesi kullanılmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "KURUMSAL & DİĞER",
+            error: "Kurumsal internet bankacılığına giremeyen müşteri aktarma ve şube arasında yönlendirilirken çağrı hakimiyeti zayıf kalmış, müşteriye iki defa isim sorulmuştur.",
+            correct: "Çağrı hakimiyeti korunmalı, müşterinin adı tek seferde alınıp görüşme boyunca doğru akış izlenmelidir."
+          }
         ]
       },
       {
-        name: "LEYLA TUNÇ", listened: 12, clean: 4, errors: 8, topTopic: "Bloke Hesap & 3. Şahıs Uyarısı (3 Hata)",
-        mistakes: [
-          { tag: "BLOKE_KART", topic: "BLOKE HESAP", error: "Ekrandaki bloke tutarı ve açıklaması paylaşılmamış; iki çağrıda 3. şahıs sesi gelmesine rağmen güvenlik uyarısı yapılmamış ve kapanış sonrası çağrı 10. saniyede kapatılmıştır.", fix: "Bloke tutarı ve açıklaması paylaşılmalı, 3. şahıs sesinde güvenlik uyarısı yapılmalı ve kapanıştan hemen sonra çağrı sonlandırılmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "HESAP EK - SESSİZLİK & KART/KANAL", error: "İşlem sırasında 1 dakika boyunca hiç ses verilmemiş; bankomat kart sorununda kanal ayarlarından internet bankacılığı açılmış; transfer sorununda 'internet alışverişi için gerekli' denmiştir.", fix: "İşlem esnasında ara ara ses verilmelidir; soruna uygun ekran ve doğru ürün bilgisi paylaşılmalıdır." },
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ & DİĞER", error: "Onaysız limit güncellemesi yapılmış, 3 ekran kontrol edilmemiş; çift oturum blokesi varken sigorta peşine taksit talebi için yanlış yönlendirme yapılmıştır.", fix: "Onaysız işlem yapılmamalı, limit sonrası 3 ekran kontrol edilmeli ve çift oturum/yetki durumu doğru değerlendirilmelidir." }
+        name: "LEYLA TUNÇ", listened: 12, clean: 4, errors: 8,
+        focus: "Bloke Hesap, 3. Şahıs Uyarısı (2 Hata) & Uzun Sessizlik",
+        cases: [
+          {
+            cat: "BLOKE_KART", topic: "BLOKE HESAP",
+            error: "Ekrandaki bloke tutarı ve açıklaması paylaşılmamış; iki çağrıda 3. şahıs sesi gelmesine rağmen güvenlik uyarısı yapılmamış ve kapanış sonrası çağrı 10. saniyede kapatılmıştır.",
+            correct: "Bloke tutarı ve açıklaması paylaşılmalı, 3. şahıs sesinde güvenlik uyarısı yapılmalı ve kapanış sonrası çağrı hemen sonlandırılmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "HESAP EK - SESSİZLİK & KART/KANAL",
+            error: "İşlem sırasında 1 dakika boyunca hiç ses verilmemiş; bankomat kart sorununda kanal ayarlarından internet bankacılığı açılmış; transfer sorununda 'internet alışverişi için gerekli' denmiştir.",
+            correct: "İşlem esnasında ara ara ses verilmelidir; soruna uygun ekran kontrol edilip doğru ürün bilgisi paylaşılmalıdır."
+          },
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ & DİĞER",
+            error: "Onaysız limit güncellemesi yapılmış, 3 ekran kontrol edilmemiş; çift oturum blokesi varken sigorta peşine taksit talebi için yanlış yönlendirme yapılmıştır.",
+            correct: "Onaysız işlem yapılmamalı, limit sonrası 3 ekran kontrol edilmeli ve çift oturum/yetki durumu doğru değerlendirilmelidir."
+          }
         ]
       },
       {
-        name: "LEYLA ÇETİN", listened: 12, clean: 2, errors: 10, topTopic: "Para Transferleri (4 Hata) & Ek Hesap (3 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Limit sonrası 3 ekran kontrol edilmemiş, '1.5 mn üzeri için şube ve mobilden yapabilirsiniz' denmiş (mobilden üst limit 2 mn TL), teyit araması cevaplanmayan iade transferde ekran kontrolsüz 'tekrar gönderebilirsiniz' denmiştir.", fix: "Mobil transfer üst limitinin 2 milyon TL olduğu belirtilmeli; teyit araması iadesi sonrası Hesap Blokesi ve Hesap İşlem Türü kontrol edilmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "HESAP EK - TAKSİTLİ - ERKEN KAPAMA", error: "Pasaport harcı ödemesinde müşteri 3 kez tekrar ettirilmiş, hesap yerine 'bankomat kartınızdan çekim yapılmamış' denmiş; taksitli ek hesap kapatmada 'sona kalan hesapları şubeden kapatabilirsiniz' denmiştir (2 kez).", fix: "Etkin dinleme yapılmalı, işlem hesabı/kartı ayrımı doğru verilmeli ve ek hesap kapatma prosedürü doğru uygulanmalıdır." },
-          { tag: "BLOKE_KART", topic: "BLOKE/ŞİFRE İNTERNET & MOBİL BANKACILIK", error: "Bloke kaldırmada 'SMS ile dijital şifre bildirilsin' kutucuğu işaretlenmemiş ve onay ekranı gelmeden 'işleminizi gerçekleştirdim' denmiştir.", fix: "SMS bildirimi kutucuğu işaretlenmeli ve sistem onay ekranı görünmeden işlemin tamamlandığı söylenmemelidir." },
-          { tag: "ONAY_ILETISIM", topic: "GÜVENLİK/KANAL & FATURA TALİMAT", error: "Oturumu açık müşteriye isimle hitap edilmemiş, 2 ekran kontrol edilmemiş; çift ödenen faturada 'kesin iade olur' denmiştir.", fix: "Oturumu açık müşteriye isimle hitap edilmeli; kurum yetkisindeki iadelerde kesin iade taahhüdü verilmemelidir." }
+        name: "Leyla ÇETİN", listened: 12, clean: 2, errors: 10,
+        focus: "Para Transferi & Mobil Limit (4 Hata) / Ek Hesap (3 Hata)",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Limit sonrası 3 ekran kontrol edilmemiş, '1.5 mn üzeri için şube ve mobilden yapabilirsiniz' denmiş (mobilden üst limit 2 mn TL), teyit araması cevaplanmayan iade transferde ekran kontrolsüz 'tekrar gönderebilirsiniz' denmiştir.",
+            correct: "Mobil transfer üst limitinin 2 milyon TL olduğu belirtilmeli; teyit araması iadesi sonrası Hesap Blokesi ve Hesap İşlem Türü kontrol edilmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "HESAP EK - TAKSİTLİ - ERKEN KAPAMA",
+            error: "Pasaport harcı ödemesinde müşteri 3 kez tekrar ettirilmiş, hesap yerine 'bankomat kartınızdan çekim yapılmamış' denmiş; taksitli ek hesap kapatmada 'sona kalan hesapları şubeden kapatabilirsiniz' denmiştir (2 kez).",
+            correct: "Etkin dinleme yapılmalı, işlem hesabı/kartı ayrımı doğru verilmeli ve ek hesap kapatma prosedürü doğru uygulanmalıdır."
+          },
+          {
+            cat: "BLOKE_KART", topic: "BLOKE/ŞİFRE İNTERNET & MOBİL BANKACILIK",
+            error: "Bloke kaldırmada 'SMS ile dijital şifre bildirilsin' kutucuğu işaretlenmemiş ve onay ekranı gelmeden 'işleminizi gerçekleştirdim' denmiştir.",
+            correct: "SMS bildirimi kutucuğu işaretlenmeli ve onay ekranı çıkmadan işlemin gerçekleştiği söylenmemelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "GÜVENLİK/KANAL & FATURA TALİMAT",
+            error: "Oturumu açık müşteriye isimle hitap edilmemiş, 2 ekran kontrol edilmemiş; çift ödenen faturada 'kesin iade olur' denmiştir.",
+            correct: "Oturumu açık müşteriye isimle hitap edilmeli; kurum yetkisindeki iadelerde kesin iade taahhüdü verilmemelidir."
+          }
         ]
       },
       {
-        name: "MAHSUM AKMAN", listened: 12, clean: 2, errors: 10, topTopic: "Para Transferleri (5 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Bekletme izni/teşekkürü kullanılmadan EFT iade ekranına bakılmadan '1 gün sonra yatar' denmiş; 3 çağrıda 3 zorunlu ekran kontrol edilmemiş ve 2 çağrıda onaysız limit güncellenmiştir.", fix: "Bekletme izni ve dönüş teşekkürü edilmeli, EFT iade ekranı kontrol edilmeli, onaysız limit güncellenmemeli ve 3 ekran incelenmelidir." },
-          { tag: "BLOKE_KART", topic: "BLOKE HESAP & BLOKE SİM KART", error: "Teyit araması iadesi sonrası ekran kontrol edilmediği için müşteri çağrıyı sonlandırmıştır (2 kez); SIM kart bloke kaldırmada uzun sessizlik kalmış ve sadece şube/ATM sayılmıştır.", fix: "İade sonrası ilgili ekranlar kontrol edilmeli, uzun sessizlikten kaçınılmalı ve SIM kart bloke kaldırma kanalları eksiksiz söylenmelidir." },
-          { tag: "BLOKE_KART", topic: "DİJİTAL ŞİFRE & BANKOMAT KART KURYE", error: "Şubeye kimlik beyanı yapan müşteriye eksik açıklama yapılmış; kart teslim süresi '7-10 gün' denmiştir (şube ort. 5 iş günü, adres ort. 15 iş günü).", fix: "Kart teslim süreleri şube için ortalama 5 iş günü, ev/iş adresi için ortalama 15 iş günü olarak paylaşılmalıdır." }
+        name: "MAHSUM AKMAN", listened: 12, clean: 2, errors: 10,
+        focus: "Para Transferleri & Onaysız Limit (5 Hata) / Bekletme Scripti",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Bekletme izni ve dönüş teşekkürü kullanılmadan EFT iade ekranı kontrol edilmeden '1 gün sonra yatar' denmiş; 3 çağrıda 3 zorunlu ekran kontrol edilmemiş ve 2 çağrıda onaysız limit güncellenmiştir.",
+            correct: "Bekletme öncesi izin ('bekletebilir miyim?') ve dönüşte teşekkür edilmeli, EFT iade ekranı kontrol edilmeli, onaysız limit güncellenmemeli ve 3 ekran incelenmelidir."
+          },
+          {
+            cat: "BLOKE_KART", topic: "BLOKE HESAP & BLOKE SİM KART",
+            error: "Teyit araması iadesi sonrası ekran kontrol edilmediği için müşteri görüşmeyi sonlandırmıştır (2 kez); SIM kart bloke kaldırmada uzun sessizlik kalmış ve yalnızca şube/ATM sayılmıştır.",
+            correct: "İade sonrası ilgili ekranlar kontrol edilmeli, uzun sessizlikten kaçınılmalı ve SIM kart bloke kaldırma kanalları eksiksiz paylaşılmalıdır."
+          },
+          {
+            cat: "BLOKE_KART", topic: "DİJİTAL ŞİFRE & BANKOMAT KART KURYE",
+            error: "Şubeye kimlik beyanı yapan müşteriye eksik açıklama yapılmış; kart teslim süresi '7-10 gün' denmiştir (şube ort. 5 iş günü, adres ort. 15 iş günü).",
+            correct: "Kart teslim süreleri şube için ortalama 5 iş günü, ev/iş adresi için ortalama 15 iş günü olarak paylaşılmalıdır."
+          }
         ]
       },
       {
-        name: "MELİKE ÖZDURAK", listened: 12, clean: 5, errors: 7, topTopic: "Para Transferleri & Hesap İşlem Türü (4 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ & GÜVENLİK/KANAL AYARLARI", error: "Limit sonrası 3 ekran kontrol edilmemiş; teyit araması sonrası yaşanan sorunda yalnızca hesap blokesi ve vadesiz hareketlere bakılıp Hesap İşlem Türü kontrol edilmeden 'sorun yok' denmiştir (2 kez).", fix: "Teyit araması sonrası transfer/ayar kontrollerinde Hesap İşlem Türü ekranı da mutlaka kontrol edilmelidir." },
-          { tag: "BLOKE_KART", topic: "BLOKE HESAP & KREDİ KARTI ŞİFRE", error: "Bloke Kaldır ekranında bloke tutarı görünmesine rağmen eksik söylenmiş; kredi kartı şifresi vade tarihi teyit edilmeden ve onaysız gönderilmiştir.", fix: "Bloke tutarı eksiksiz okunmalı; kart şifre gönderiminde vade tarihi teyidi ve açık onay alınmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "GÜVENLİK UYARILARININ YAPILMAMASI", error: "Çağrıya 3. şahıs sesi yansımasına rağmen güvenlik uyarısı yapılmamıştır.", fix: "Görüşmeye 3. şahıs sesi karıştığında zorunlu güvenlik uyarısı yapılmalıdır." }
+        name: "MELİKE ÖZDURAK", listened: 12, clean: 5, errors: 7,
+        focus: "Para Transferleri & Hesap İşlem Türü Kontrolü (4 Hata)",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ & GÜVENLİK/KANAL AYARLARI",
+            error: "Limit sonrası 3 ekran kontrol edilmemiş; teyit araması sonrası yaşanan sorunda yalnızca hesap blokesi ve vadesiz hareketlere bakılıp Hesap İşlem Türü kontrol edilmeden 'sorun yok' denmiştir (2 kez).",
+            correct: "Teyit araması sonrası transfer/ayar kontrollerinde Hesap İşlem Türü ekranı da mutlaka kontrol edilmelidir."
+          },
+          {
+            cat: "BLOKE_KART", topic: "BLOKE HESAP & KREDİ KARTI ŞİFRE",
+            error: "Bloke Kaldır ekranında bloke tutarı görünmesine rağmen eksik söylenmiş; kredi kartı şifresi vade tarihi teyit edilmeden ve onaysız gönderilmiştir.",
+            correct: "Bloke tutarı eksiksiz okunmalı; kart şifre gönderiminde vade tarihi teyidi ve açık onay alınmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "GÜVENLİK UYARILARININ YAPILMAMASI",
+            error: "Çağrıya 3. şahıs sesi yansımasına rağmen güvenlik uyarısı yapılmamıştır.",
+            correct: "Görüşmeye 3. şahıs sesi yansıdığında güvenlik uyarısı yapılmalıdır."
+          }
         ]
       },
       {
-        name: "MENİCE ESMER", listened: 12, clean: 5, errors: 7, topTopic: "Geç Çağrı Karşılama (3 Çağrı) & MTA Güvenliği",
-        mistakes: [
-          { tag: "BLOKE_KART", topic: "KURUMSAL (MTA Güvenlik İhlali)", error: "MTA seviyesinde olan müşteriye paylaşılmaması gereken bilgi paylaşılmıştır (güvenlik açığından çağrı sıfırlanır).", fix: "MTA seviyesindeki müşterilerle paylaşılmaması gereken bilgiler kesinlikle verilmemeli; gerekiyorsa bağlı şube telefonu paylaşılmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "1. STANDART KARŞILAMA & DİĞER", error: "Çağrıya 7. ve 8. saniyelerde geç karşılama yapılmış; çift ödenen faturada 'aynı gün arasaydınız iptal/iade edebilirdik' şeklinde hatalı bilgi verilmiştir.", fix: "Çağrı açılır açılmaz karşılama yapılmalı; çift fatura iptal/iade işlemlerinin ilgili kurum tarafından yapıldığı belirtilmelidir." },
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ & KANAL AYARLARI", error: "Ulaşmayan transferde sorgu numarasıyla Giden EFT/Havale kontrol edilmemiş, hızlandırma talebi iletilmemiş ve limit sonrası 3 ekran kontrol edilmemiştir.", fix: "Sorgu numarasıyla Giden EFT/Havale kontrol edilmeli, bekleyen işlemde hızlandırma talebi açılmalı ve 3 ekran incelenmelidir." }
+        name: "MENİCE ESMER", listened: 12, clean: 5, errors: 7,
+        focus: "Geç Çağrı Karşılama (3 Çağrı) & MTA Bilgi Güvenliği",
+        cases: [
+          {
+            cat: "BLOKE_KART", topic: "KURUMSAL (MTA Güvenlik İhlali)",
+            error: "MTA seviyesinde olan müşteriye paylaşılmaması gereken bilgi paylaşılmıştır (güvenlik açığından çağrı sıfırlanır).",
+            correct: "MTA seviyesindeki müşterilerle paylaşılmaması gereken bilgiler kesinlikle verilmemeli; gerekiyorsa bağlı şubenin telefon bilgisi paylaşılmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "1. STANDART KARŞILAMA & DİĞER",
+            error: "Çağrıya 7. ve 8. saniyelerde geç karşılama yapılmış; çift ödenen faturada 'aynı gün arasaydınız iptal/iade edebilirdik' şeklinde hatalı bilgi verilmiştir.",
+            correct: "Çağrı açılır açılmaz karşılama yapılmalı; çift fatura iptal/iade işlemlerinin ilgili kurum tarafından yapıldığı belirtilmelidir."
+          },
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ & KANAL AYARLARI",
+            error: "Ulaşmayan transferde sorgu numarasıyla Giden EFT/Havale kontrol edilmemiş, hızlandırma talebi iletilmemiş ve limit sonrası 3 ekran kontrol edilmemiştir.",
+            correct: "Sorgu numarasıyla Giden EFT/Havale kontrol edilmeli, bekleyen işlemde hızlandırma talebi açılmalı ve 3 ekran incelenmelidir."
+          }
         ]
       },
       {
-        name: "MUHAMMED EKİN", listened: 10, clean: 9, errors: 1, topTopic: "Mobil Bankacılık Bloke Kanal Bilgisi (1 Hata)",
-        mistakes: [
-          { tag: "BLOKE_KART", topic: "BLOKE/ŞİFRE İNTERNET & MOBİL BANKACILIK", error: "Mobil bankacılığı blokeli olan ve güvenliği geçemeyen müşteriye 'mobilden yapabilirsiniz' denilmiştir.", fix: "Güvenliği geçemeyen mobil bankacılık blokeli müşteriler yalnızca şubeye yönlendirilmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "PARA TRANSFERLERİ (İfade Notu)", error: "Çağrı hatasız sayılsa da limit sonrası ekran kontrolü sırasında müşteriye 'ekranlarım hata verdi, kontrol ediyorum' denmiştir.", fix: "Sistem/ekran aksaklıkları müşteriye 'ekranım hata verdi' şeklinde yansıtılmamalıdır." }
+        name: "MUHAMMED EKİN", listened: 10, clean: 9, errors: 1,
+        focus: "Mobil Bankacılık Bloke Kanal Bilgisi (1 Hata — Dönem 1.'si)",
+        cases: [
+          {
+            cat: "BLOKE_KART", topic: "BLOKE/ŞİFRE İNTERNET & MOBİL BANKACILIK",
+            error: "Mobil bankacılığı blokeli olan ve güvenliği geçemeyen müşteriye 'mobilden yapabilirsiniz' denilmiştir.",
+            correct: "Güvenliği geçemeyen mobil bankacılık blokeli müşteriler yalnızca şubeye yönlendirilmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "PARA TRANSFERLERİ (İfade Notu)",
+            error: "Çağrı hatasız değerlendirilse de limit sonrası ekran kontrolü sırasında 'ekranlarım hata verdi, kontrol ediyorum' denmiştir.",
+            correct: "Sistem/ekran aksaklıkları müşteriye 'ekranım hata verdi' şeklinde yansıtılmamalıdır."
+          }
         ]
       },
       {
-        name: "MUHAMMED YUSUF KILIÇ", listened: 12, clean: 4, errors: 8, topTopic: "Para Transferleri (3 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Kıymetli maden transferinde 3 ekran kontrol edilmemiş ve yatırım skiline aktarılmış; iki çağrıda limit sonrası Yetki Detay/Ayarları kontrol edilmemiştir.", fix: "Kıymetli maden transfer limitinde havale limiti ve 3 zorunlu ekran kontrol edilmeli, hatalı skil aktarımı yapılmamalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "1. BEKLETME & DİĞER (Cep İmza / Sessizlik)", error: "'Sizleri biraz bekleteceğim' şeklinde emir kipi kullanılmış (2 kez); ses gelmediğinde 20 sn arayla uyarı yerine 'sesinizi alamazsam sonlandırabilirim' denmiş ve Cep İmza süresi 180 sn yerine '80 saniye' söylenmiştir.", fix: "'Bekletebilir miyim?' ricası kullanılmalı, 20 sn arayla 'Sesimi alabiliyor musunuz?' denmeli ve Cep İmza süresinin 180 saniye olduğu belirtilmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "HESAP EK - TAKSİTLİ - ERKEN KAPAMA", error: "Ek hesap kapatma Vadesiz Hesap Kapat ekranından denenmiş, hata verince kredi kartı iptal skiline aktarılmıştır.", fix: "Ek hesap kapatma doğru ekrandan yürütülmeli, hata durumunda yanlış skile aktarım yapılmamalıdır." }
+        name: "MUHAMMED YUSUF KILIÇ", listened: 12, clean: 4, errors: 8,
+        focus: "Para Transferleri (3 Hata), Bekletme Üslubu & Cep İmza Süresi",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Kıymetli maden transferinde 3 ekran kontrol edilmemiş ve yatırım skiline aktarılmış; iki çağrıda limit sonrası Yetki Detay/Ayarları kontrol edilmemiştir.",
+            correct: "Kıymetli maden transfer limitinde havale limiti ve 3 zorunlu ekran kontrol edilmeli, hatalı skil aktarımı yapılmamalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "1. BEKLETME & DİĞER (Cep İmza / Sessizlik)",
+            error: "'Sizleri biraz bekleteceğim' şeklinde emir kipi kullanılmış (2 kez); ses gelmediğinde 20 sn arayla uyarı yerine 'sesinizi alamazsam sonlandırabilirim' denmiş ve Cep İmza süresi 180 sn yerine '80 saniye' söylenmiştir.",
+            correct: "'Bekletebilir miyim?' ricası kullanılmalı, 20 sn arayla 'Sesimi alabiliyor musunuz?' denmeli ve Cep İmza süresinin 180 saniye olduğu belirtilmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "HESAP EK - TAKSİTLİ - ERKEN KAPAMA",
+            error: "Ek hesap kapatma Vadesiz Hesap Kapat ekranından denenmiş, hata verince kredi kartı iptal skiline aktarılmıştır.",
+            correct: "Ek hesap kapatma doğru ekrandan yapılmalı, hata durumunda yanlış skile aktarım yapılmamalıdır."
+          }
         ]
       },
       {
-        name: "NAZLICAN DUMAN", listened: 12, clean: 2, errors: 10, topTopic: "Etkin Dinleme, Hitap & Ek Hesap/Kanal",
-        mistakes: [
-          { tag: "ONAY_ILETISIM", topic: "1. ETKİN DİNLEME & HİTAP ('Hocam' / İsimsiz)", error: "'Kredi kartıma iade gelecek' diyen müşteriye ısrarla vadesiz hesap söylenmiş (2 kez); çağrıda 'hocam' diye hitap edilmiş veya isimle hitap atlanmıştır.", fix: "Müşteriye en az 1 kez ismiyle hitap edilmeli, 'hocam' gibi ifadeler kullanılmamalı ve müşteri talebi etkin dinlenmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "HESAP EK & DİĞER (Sosyal Yardım Kartı)", error: "Vadesiz kapanmayınca ek hesabının kapatılmasını isteyen müşteri çağrıda işlem yapılmadan şubeye yönlendirilmiş (2 kez); sosyal yardım kart şifresi için 'mobilden alabilirsiniz' denmiş ve sorulmadan yatırım hesabı tüm işlemlere açılmıştır.", fix: "Çağrı içinde kapatılabilen ek hesap kapatılmalı; sosyal yardım kart şifresinin şube/kurumdan alındığı belirtilmeli ve onay/soru olmadan yetki açılmamalıdır." },
-          { tag: "BLOKE_KART", topic: "ATM, KART KULLANIM & BLOKE", error: "ATM limiti ezbere söylenmiş; internet alışverişi hatasında Kart Hareketleri, Hesap Blokesi ve Hesap İşlem Türü kontrol edilmemiş; mobil blokeli müşteriye 'mobilden kaldırabilirsiniz' denmiş ve SMS şifre formatı verilmemiştir.", fix: "İlgili tüm ekranlar kontrol edilmeli, güvenliği geçemeyen mobil blokeli müşteri şubeye yönlendirilmeli ve SMS şifre formatı paylaşılmalıdır." }
+        name: "NAZLICAN DUMAN", listened: 12, clean: 2, errors: 10,
+        focus: "Etkin Dinleme, Hitap ('Hocam' / İsimsiz) & Ek Hesap/Kanal",
+        cases: [
+          {
+            cat: "ILETISIM_ONAY", topic: "1. ETKİN DİNLEME & HİTAP",
+            error: "'Kredi kartıma iade gelecek' diyen müşteriye ısrarla vadesiz hesap söylenmiş (2 kez); çağrıda 'hocam' diye hitap edilmiş veya isimle hitap atlanmıştır.",
+            correct: "Müşteriye en az 1 kez ismiyle hitap edilmeli, 'hocam' gibi hitaplardan kaçınılmalı ve müşteri talebi etkin dinlenmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "HESAP EK & DİĞER (Sosyal Yardım Kartı)",
+            error: "Vadesiz kapanmayınca ek hesabının kapatılmasını isteyen müşteri çağrıda işlem yapılmadan şubeye yönlendirilmiş (2 kez); sosyal yardım kart şifresi için 'mobilden alabilirsiniz' denmiş ve sorulmadan yatırım hesabı tüm işlemlere açılmıştır.",
+            correct: "Çağrı içinde kapatılabilen ek hesap kapatılmalı; sosyal yardım kart şifresinin şube/kurumdan alındığı belirtilmeli ve müşteri teyidi/sorusu olmadan yetki açılmamalıdır."
+          },
+          {
+            cat: "BLOKE_KART", topic: "ATM, KART KULLANIM & BLOKE",
+            error: "ATM limiti ezbere söylenmiş; internet alışverişi hatasında Kart Hareketleri, Hesap Blokesi ve Hesap İşlem Türü kontrol edilmemiş; mobil blokeli müşteriye 'mobilden kaldırabilirsiniz' denmiş ve SMS şifre formatı verilmemiştir.",
+            correct: "İlgili tüm ekranlar kontrol edilmeli, güvenliği geçemeyen mobil blokeli müşteri şubeye yönlendirilmeli ve SMS şifre formatı paylaşılmalıdır."
+          }
         ]
       },
       {
-        name: "NURŞAN GÜNER", listened: 12, clean: 7, errors: 5, topTopic: "Para Transferleri & Güvenlik/Kanal (2'şer Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Kıymetli maden alış-satış üst limiti (5.500.500 TL) söylenirken 'Mesai İçi Üst Limit' ayrımı ve mesai dışı 50.000 TL sınırı belirtilmemiş; Yetki Ayarları ekranı yarıya kadar indirilip hızlıca geçilmiştir.", fix: "Kıymetli maden limitinde 5.500.500 TL'nin mesai içi üst limit, mesai dışı sınırın ise 50.000 TL olduğu belirtilmeli; Yetki Ayarları sonuna kadar kontrol edilmelidir." },
-          { tag: "BLOKE_KART", topic: "GÜVENLİK AYARLARI & 3. ŞAHIS UYARISI", error: "3. şahıs sesine güvenlik uyarısı yapılmamış; günlük limit güncelleme sonrası 'para transferi detay yetki ayarı' ve 'hesap işlem türü' ekranları kontrol edilmemiştir.", fix: "3. şahıs sesinde güvenlik uyarısı yapılmalı ve limit sonrası yetki/işlem türü ekranları kontrol edilmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "MÜŞTERİ DIŞ ARAMA LİSTESİ", error: "Dış aramadan arandığını söyleyen müşteri ekran kontrolü yapılmadan sigorta skiline aktarılmıştır.", fix: "Dış arama ekranı kontrol edildikten sonra gerekli işlem ve yönlendirme yapılmalıdır." }
+        name: "Nurşan GÜNER", listened: 12, clean: 7, errors: 5,
+        focus: "Kıymetli Maden Mesai İçi/Dışı Limit & Yetki Ayarları Kaydırma",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Kıymetli maden alış-satış üst limiti (5.500.500 TL) söylenirken 'Mesai İçi Üst Limit' ayrımı ve mesai dışı 50.000 TL sınırı belirtilmemiş; Yetki Ayarları ekranı yarıya kadar indirilip hızlıca geçilmiştir.",
+            correct: "Kıymetli maden limitinde 5.500.500 TL'nin mesai içi üst limit, mesai dışı sınırın ise 50.000 TL olduğu belirtilmeli; Yetki Ayarları sonuna kadar kontrol edilmelidir."
+          },
+          {
+            cat: "BLOKE_KART", topic: "GÜVENLİK AYARLARI & 3. ŞAHIS UYARISI",
+            error: "3. şahıs sesine güvenlik uyarısı yapılmamış; günlük limit güncelleme sonrası 'para transferi detay yetki ayarı' ve 'hesap işlem türü' ekranları kontrol edilmemiştir.",
+            correct: "3. şahıs sesinde güvenlik uyarısı yapılmalı ve limit sonrası yetki/işlem türü ekranları kontrol edilmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "MÜŞTERİ DIŞ ARAMA LİSTESİ",
+            error: "Dış aramadan arandığını söyleyen müşteri ekran kontrolü yapılmadan sigorta skiline aktarılmıştır.",
+            correct: "Dış arama ekranı kontrol edildikten sonra gerekli işlem ve yönlendirme yapılmalıdır."
+          }
         ]
       },
       {
-        name: "RAHİME ŞAHİN", listened: 12, clean: 5, errors: 7, topTopic: "Para Transferleri (3 Hata) & Dijital Şifre (2 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ & KANAL AYARLARI", error: "Limit güncelleme sonrası 3 zorunlu ekran 3 çağrıda kontrol edilmemiş; 'hesap işlem türü güncellemesi gerekiyor' denerek aktarılan müşteride ekran kontrolsüz 'buradan işlem yapılamıyor' denmiştir.", fix: "Limit sonrası 3 ekran kontrol edilmeli; hesap işlem türü güncelleme taleplerinde ilgili ekranlar incelenmelidir." },
-          { tag: "BLOKE_KART", topic: "BLOKE/ŞİFRE İNTERNET & MOBİL BANKACILIK", error: "Dijital şifresini unutan müşteride güvenlik ekranında 'Bilinmiyor' butonuna basılarak aktif kart şifresiyle güvenlik geçme alternatifi denenmemiştir (2 kez).", fix: "Dijital şifresi unutulduğunda güvenlik ekranında 'Bilinmiyor' seçeneği ile aktif kart şifresi doğrulaması denenmelidir." },
-          { tag: "ONAY_ILETISIM", topic: "KURUMSAL (HOLD Dış Arama)", error: "HOLD beklemesinde hattan düşen müşteriye dış arama yapılmamıştır.", fix: "HOLD sırasında hattan düşen müşteriye mutlaka dış arama yapılmalıdır." }
+        name: "RAHİME ŞAHİN", listened: 12, clean: 5, errors: 7,
+        focus: "Para Transferi 3 Ekran (3 Hata) & 'Bilinmiyor' Güvenlik Geçişi",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ & KANAL AYARLARI",
+            error: "Limit güncelleme sonrası 3 zorunlu ekran 3 çağrıda kontrol edilmemiş; 'hesap işlem türü güncellemesi gerekiyor' denerek aktarılan müşteride ekran kontrolsüz 'buradan işlem yapılamıyor' denmiştir.",
+            correct: "Limit sonrası 3 ekran kontrol edilmeli; hesap işlem türü güncelleme taleplerinde ilgili ekranlar incelenmelidir."
+          },
+          {
+            cat: "BLOKE_KART", topic: "BLOKE/ŞİFRE İNTERNET & MOBİL BANKACILIK",
+            error: "Dijital şifresini unutan müşteride güvenlik ekranında 'Bilinmiyor' butonuna basılarak aktif kart şifresiyle güvenlik geçme alternatifi denenmemiştir (2 kez).",
+            correct: "Dijital şifresi unutulduğunda güvenlik ekranında 'Bilinmiyor' seçeneği ile aktif kart şifresi doğrulaması denenmelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "KURUMSAL (HOLD Dış Arama)",
+            error: "HOLD beklemesinde hattan düşen müşteriye dış arama yapılmamıştır.",
+            correct: "HOLD sırasında hattan düşen müşteriye mutlaka dış arama yapılmalıdır."
+          }
         ]
       },
       {
-        name: "SADETTİN ERDEM", listened: 12, clean: 3, errors: 9, topTopic: "Para Transferleri (3 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Tamamlanmayan EFT'de Giden EFT durumu ve hesaptaki bloke kontrol edilmeden 'diğer bankanın sorumluluğunda' denmiş; iki çağrıda limit sonrası 3 ekran kontrol edilmemiştir.", fix: "Ulaşmayan EFT/havalede Giden EFT menüsü ve hesap blokesi kontrol edilmeli; limit sonrası 3 ekran incelenmelidir." },
-          { tag: "BLOKE_KART", topic: "KREDİ KARTI KURYE & BLOKE HESAP", error: "Kurye onayında 'adresinizi güncelliyorum' denmiş; ekranda bloke açıklaması görünmesine rağmen müşteriye açıklanmamıştır.", fix: "'Kartınızı istediğiniz adrese yönlendiriyorum, onaylıyor musunuz?' denmeli; ekrandaki bloke açıklaması paylaşılmalıdır." },
-          { tag: "ONAY_ILETISIM", topic: "FATURA TALİMAT, DIŞ ARAMA & TALEP", error: "Şans oyunları yüklemede pop-up okunmadan onaylanmış, işlem bitmeden 'gerçekleşti' denmiş ve düşen müşteri aranmamış; geç yansıyan dış aramada 'biz aramamışız' denmiş; şubeye ulaşamayan müşteriye 'talep oluşturamayız' denmiştir.", fix: "Pop-up okunmalı, yarım kalan işlemlerde dış arama yapılmalı, geç yansıyan aramalarda tekrar arama bilgisi verilmeli ve ilgili talep kaydı oluşturulmalıdır." }
+        name: "Sadettin ERDEM", listened: 12, clean: 3, errors: 9,
+        focus: "Para Transferleri (3 Hata), Giden EFT/Bloke & Pop-up/Dış Arama",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Tamamlanmayan EFT'de Giden EFT durumu ve hesaptaki bloke kontrol edilmeden 'diğer bankanın sorumluluğunda' denmiş; iki çağrıda limit sonrası 3 ekran kontrol edilmemiştir.",
+            correct: "Ulaşmayan EFT/havalede Giden EFT menüsü ve hesap blokesi kontrol edilmeli; limit sonrası 3 ekran incelenmelidir."
+          },
+          {
+            cat: "BLOKE_KART", topic: "KREDİ KARTI KURYE & BLOKE HESAP",
+            error: "Kurye onayında 'adresinizi güncelliyorum' denmiş; ekranda bloke açıklaması görünmesine rağmen müşteriye açıklanmamıştır.",
+            correct: "'Kartınızı istediğiniz adrese yönlendiriyorum, onaylıyor musunuz?' denmeli; ekrandaki bloke açıklaması paylaşılmalıdır."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "FATURA TALİMAT, DIŞ ARAMA & TALEP",
+            error: "Şans oyunları yüklemede pop-up okunmadan onaylanmış, işlem bitmeden 'gerçekleşti' denmiş ve düşen müşteri aranmamış; geç yansıyan dış aramada 'biz aramamışız' denmiş; şubeye ulaşamayan müşteriye 'talep oluşturamayız' denmiştir.",
+            correct: "Pop-up okunmalı, yarım kalan işlemlerde dış arama yapılmalı, geç yansıyan aramalarda tekrar arama bilgisi verilmeli ve ilgili talep kaydı oluşturulmalıdır."
+          }
         ]
       },
       {
-        name: "SEYFETTİN GÜN", listened: 12, clean: 5, errors: 7, topTopic: "Para Transferleri & Onaysız İşlem (3 Hata)",
-        mistakes: [
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Transfer hatasında Yetki Detay ve Hesap İşlem Türü kontrol edilmemiş; iki çağrıda onaysız havale limiti güncellenmeye çalışılmış (pop-up nedeniyle olmamış) ve 3 ekran kontrol edilmemiştir.", fix: "Müşteri onayı olmadan limit güncellenmemeli ve işlem sonrası 3 zorunlu ekran kontrol edilmelidir." },
-          { tag: "BLOKE_KART", topic: "ŞÜPHELİ İŞLEM & KAYIP KART TEYİDİ", error: "Şahsi numaradan arandığını bildiren müşteri Kayıp/Çalıntı skiline aktarılmadan dış arama ekranından bilgi verilmiş; bilinmeyen kartlarda 'kayıp mı?' teyidi alınmamış ve müşteri sözü kesilmiştir.", fix: "Şüpheli aramalarda beklemeden Kayıp/Çalıntı birimine aktarılmalı, bilinmeyen kartlarda kayıp teyidi alınmalı ve söz kesilmemelidir." },
-          { tag: "ONAY_ILETISIM", topic: "YATIRIM KIYMETLİ MADEN & KAPANIS", error: "Kıymetli maden alış vergisinde MİM Bilgi 280 gereği KMV (binde iki) belirtilmemiş; transfer akıbeti kontrolsüz 'işlem tamamlandı' denmiş ve kapanış yapılmadan çağrı sonlandırılmıştır.", fix: "Kıymetli maden alımında KMV'nin binde iki olduğu belirtilmeli; kapanış anonsu tamamlanmadan hat kapatılmamalıdır." }
+        name: "SEYFETTİN GÜN", listened: 12, clean: 5, errors: 7,
+        focus: "Para Transferleri & Onaysız İşlem (3 Hata), Şüpheli İşlem & KMV",
+        cases: [
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Transfer hatasında Yetki Detay ve Hesap İşlem Türü kontrol edilmemiş; iki çağrıda onaysız havale limiti güncellenmeye çalışılmış (pop-up nedeniyle olmamış) ve 3 ekran kontrol edilmemiştir.",
+            correct: "Müşteri onayı olmadan limit güncellenmemeli ve işlem sonrası 3 zorunlu ekran kontrol edilmelidir."
+          },
+          {
+            cat: "BLOKE_KART", topic: "ŞÜPHELİ İŞLEM & KAYIP KART TEYİDİ",
+            error: "Şahsi numaradan arandığını bildiren müşteri Kayıp/Çalıntı skiline aktarılmadan dış arama ekranından bilgi verilmiş; bilinmeyen kartlarda 'kayıp mı?' teyidi alınmamış ve müşteri sözü kesilmiştir.",
+            correct: "Şüpheli aramalarda beklemeden Kayıp/Çalıntı birimine aktarılmalı, bilinmeyen kartlarda kayıp teyidi alınmalı ve söz kesilmemelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "YATIRIM KIYMETLİ MADEN & KAPANIS",
+            error: "Kıymetli maden alış vergisinde MİM Bilgi 280 gereği KMV (binde iki) belirtilmemiş; transfer akıbeti kontrolsüz 'işlem tamamlandı' denmiş ve kapanış yapılmadan çağrı sonlandırılmıştır.",
+            correct: "Kıymetli maden alımında KMV'nin binde iki olduğu belirtilmeli; kapanış anonsu tamamlanmadan hat kapatılmamalıdır."
+          }
         ]
       },
       {
-        name: "SUZAN HALİL", listened: 12, clean: 8, errors: 4, topTopic: "Şube Kart Süresi, Ek Hesap & Skil Aktarımı",
-        mistakes: [
-          { tag: "BLOKE_KART", topic: "KREDİ KARTI KURYE", error: "Şubeye teslim edilen kartın hangi şubede olduğu söylenmemiş ve şubede kalma süresi değişken olmasına rağmen '1 hafta içinde teslim alabilirsiniz' şeklinde net süre verilmiştir.", fix: "Şube adı paylaşılmalı ve şubedeki kartın kalma süresi için kesin '1 hafta' taahhüdü verilmemelidir." },
-          { tag: "ONAY_ILETISIM", topic: "KREDİ KARTI AVANS PUAN & EK HESAP", error: "Avans puan çağrısı bankacılık skiline hatalı aktarılmış, isimle hitap edilmemiş ve 'bilgilerinizle aktaracağım' denmiş; ek hesap kapatmada vadesiz ekranına girilip şubeye yönlendirilmiştir.", fix: "Avans puan talebi kredi kartı skiline aktarılmalı, isimle hitap edilmeli ve ek hesap kapatma doğru ekrandan yapılmalıdır." },
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ", error: "Limit güncelleme sonrası 'Yetki Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları kontrol edilmemiştir.", fix: "Limit güncelleme sonrası 3 zorunlu ekran mutlaka kontrol edilmelidir." }
+        name: "SUZAN HALİL", listened: 12, clean: 8, errors: 4,
+        focus: "Şube Kart Süresi, Ek Hesap & Skil Aktarımı",
+        cases: [
+          {
+            cat: "BLOKE_KART", topic: "KREDİ KARTI KURYE",
+            error: "Şubeye teslim edilen kartın hangi şubede olduğu söylenmemiş ve şubede kalma süresi değişken olmasına rağmen '1 hafta içinde teslim alabilirsiniz' şeklinde net süre verilmiştir.",
+            correct: "Şube adı paylaşılmalı ve şubedeki kartın kalma süresi için kesin '1 hafta' taahhüdü verilmemelidir."
+          },
+          {
+            cat: "ILETISIM_ONAY", topic: "KREDİ KARTI AVANS PUAN & EK HESAP",
+            error: "Avans puan çağrısı bankacılık skiline hatalı aktarılmış, isimle hitap edilmemiş ve 'bilgilerinizle aktaracağım' denmiş; ek hesap kapatmada vadesiz ekranına girilip şubeye yönlendirilmiştir.",
+            correct: "Avans puan talebi kredi kartı skiline aktarılmalı, isimle hitap edilmeli ve ek hesap kapatma doğru ekrandan yapılmalıdır."
+          },
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ",
+            error: "Limit güncelleme sonrası 'Yetki Detay', 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranları kontrol edilmemiştir.",
+            correct: "Limit güncelleme sonrası 3 zorunlu ekran mutlaka kontrol edilmelidir."
+          }
         ]
       },
       {
-        name: "ZEHRA ÖZER", listened: 12, clean: 7, errors: 5, topTopic: "Vadeli Bitiş Tarihi / Yatırım Aktarımı (2 Hata)",
-        mistakes: [
-          { tag: "ONAY_ILETISIM", topic: "HESAP VADELİ - VADESİZ - OYAK - ORTAK", error: "Vadeli hesabın vade bitiş tarihi Vadeli Hesap Hareketleri ekranından verilmek yerine müşteri 2 çağrıda Yatırım skiline aktarılmıştır.", fix: "Vadeli hesap vade bitiş tarihi sorgularında Yatırım skiline aktarmadan Vadeli Hesap Hareketleri ekranından bilgi verilmelidir." },
-          { tag: "TRANSFER", topic: "PARA TRANSFERLERİ & 3. ŞAHIS UYARISI", error: "Limit güncelleme sonrası 3 ekran kontrol edilmemiş ve çağrıya yansıyan 3. şahıs sesine güvenlik uyarısı yapılmamıştır (2 kez).", fix: "Limit sonrası 3 ekran kontrol edilmeli ve 3. şahıs sesinde güvenlik uyarısı yapılmalıdır." },
-          { tag: "BLOKE_KART", topic: "BANKOMAT KART YENİLEME - ŞİFRE - KURYE", error: "Bankomat kart şifre talebinde diğer kontroller yapılmış ancak şifre gönderimi tamamlanmamıştır.", fix: "Kontrollerin ardından şifre gönderim işlemi tamamlanmalı ve müşteriye bilgi verilmelidir." }
+        name: "ZEHRA ÖZER", listened: 12, clean: 7, errors: 5,
+        focus: "Vadeli Vade Bitiş Tarihi / Yatırım Aktarımı (2 Hata) & 3. Şahıs Uyarısı",
+        cases: [
+          {
+            cat: "ILETISIM_ONAY", topic: "HESAP VADELİ - VADESİZ - OYAK - ORTAK",
+            error: "Vadeli hesabın vade bitiş tarihi Vadeli Hesap Hareketleri ekranından verilmek yerine müşteri 2 çağrıda Yatırım skiline aktarılmıştır.",
+            correct: "Vadeli hesap vade bitiş tarihi sorgularında Yatırım skiline aktarmadan Vadeli Hesap Hareketleri ekranından bilgi verilmelidir."
+          },
+          {
+            cat: "TRANSFER", topic: "PARA TRANSFERLERİ & 3. ŞAHIS UYARISI",
+            error: "Limit güncelleme sonrası 3 ekran kontrol edilmemiş ve çağrıya yansıyan 3. şahıs sesine güvenlik uyarısı yapılmamıştır (2 kez).",
+            correct: "Limit sonrası 3 ekran kontrol edilmeli ve 3. şahıs sesinde güvenlik uyarısı yapılmalıdır."
+          },
+          {
+            cat: "BLOKE_KART", topic: "BANKOMAT KART YENİLEME - ŞİFRE - KURYE",
+            error: "Bankomat kart şifre talebinde diğer kontroller yapılmış ancak şifre gönderimi tamamlanmamıştır.",
+            correct: "Kontrollerin ardından şifre gönderim işlemi tamamlanmalı ve müşteriye bilgi verilmelidir."
+          }
         ]
       }
     ];
 
-    const PLAYBOOKS = [
+    const PROCEDURES = [
       {
-        title: "1. Para Transferi Limit Güncelleme — 3 Zorunlu Ekran",
-        badge: "En Sık Hata (42 Çağrı)",
-        steps: [
-          "Limit güncelleme işlemine başlamadan önce müşteriden açık onay alınır.",
-          "Güncelleme sonrasında şu 3 ekran eksiksiz kontrol edilir: (1) Yetki Detay / Yetki Ayarları (liste sonuna kadar kaydırılarak), (2) Hesap İşlem Türü, (3) Hesap Blokesi.",
-          "Mobil transfer üst limitinin 2 milyon TL olduğu, kıymetli maden üst limitinin (5.500.500 TL) mesai içi geçerli olduğu ve mesai dışı sınırın 50.000 TL olduğu doğru aktarılır."
+        title: "Para Transferi Limit Güncelleme — 3 Zorunlu Ekran",
+        tag: "En Sık Hata (42 Çağrı)",
+        items: [
+          "Limit güncellemeye başlamadan önce müşteriden mutlaka açık onay alınır.",
+          "Güncelleme sonrasında şu 3 ekran kontrol edilir: (1) Yetki Detay / Yetki Ayarları (liste en alta kaydırılarak), (2) Hesap İşlem Türü, (3) Hesap Blokesi.",
+          "Mobil transfer üst limiti 2 milyon TL'dir; kıymetli maden üst limiti (5.500.500 TL) mesai içi geçerlidir, mesai dışı üst limit 50.000 TL'dir."
         ]
       },
       {
-        title: "2. Kayıp / Çalıntı Kart ve Şüpheli İşlem Akışı",
-        badge: "Kritik Güvenlik",
-        steps: [
-          "Kartı kaybolan veya çalınan müşterinin kartı normal iptal ekranından kapatılmaz; bekletmeden Kayıp/Çalıntı birimine aktarılır.",
-          "Şahsi numaradan şüpheli arama bildirimlerinde güvenlik sorgusuna takılmadan Kayıp/Çalıntı skiline aktarım sağlanır.",
-          "Güvenlik ekranında bilinmeyen kart çıktığında müşteriye 'Kayıp mı?' teyidi sorulur."
+        title: "Kayıp / Çalıntı Kart ve Şüpheli İşlem Acil Akışı",
+        tag: "Güvenlik Kritik",
+        items: [
+          "Kartı kaybolan veya çalınan müşterinin kartı iptal ekranından kapatılmaz; bekletmeden Kayıp/Çalıntı birimine aktarılır.",
+          "Şahsi numaradan şüpheli arama bildirimlerinde gecikmeden Kayıp/Çalıntı skiline aktarım yapılır.",
+          "Güvenlik ekranında bilinmeyen kart çıktığında müşteriye 'Kayıp mı?' teyidi sorulur; MTA güvenlik seviyesinde paylaşılmaması gereken bilgi verilmez."
         ]
       },
       {
-        title: "3. Bloke Hesap, SIM Bloke ve Şifre Süreçleri",
-        badge: "Mevzuat & Kanal Doğruluğu",
-        steps: [
-          "Kurum/icra blokelerinde borç ödense dahi blokeyi kurum değil şube kaldırır; bloke tutarı ile borç tutarı karıştırılmaz.",
+        title: "Bloke Hesap, SIM Bloke, Şifre & Kurye Kuralları",
+        tag: "Mevzuat & Ekran",
+        items: [
+          "Kurum/icra blokelerinde borç ödense dahi blokeyi kurum değil şube kaldırır; bloke tutarı ile borç tutarı aynı değildir.",
           "SIM kart bloke kaldırma kanalları eksiksiz paylaşılır; güvenliği geçemeyen mobil blokeli müşteriler yalnızca şubeye yönlendirilir.",
-          "Dijital şifre gönderiminde onay alınır, 'SMS ile bildirilsin' kutucuğu işaretlenir ve onay ekranı görülmeden 'tamamlandı' denmez; şifresi unutulan dijital şifrelerde 'Bilinmiyor' ile kart şifresi alternatifi değerlendirilir."
+          "Dijital şifre gönderiminde onay alınır, 'SMS ile bildirilsin' kutucuğu işaretlenir ve onay ekranı çıkmadan 'tamamlandı' denmez; şifresi unutulan dijital şifrelerde 'Bilinmiyor' ile kart şifresi alternatifi değerlendirilir.",
+          "Kurye '0202' hatasında ilgili talep kaydı açılır; şubedeki kart için kesin '1 hafta' taahhüdü verilmez (şube ort. 5 iş günü, adres ort. 15 iş günü)."
         ]
       },
       {
-        title: "4. Çağrı Yönetimi, Onay, Sessizlik ve Hitap",
-        badge: "İletişim Kalitesi",
-        steps: [
-          "Çağrı açılır açılmaz karşılama yapılır; 'Hee, Hı hı', 'hocam' veya emir kipi ('onaylamanız gerekiyor') yerine nazik ve kurumsal dil ('Onaylayabilir misiniz?') kullanılır.",
-          "Bekletme öncesi izin ('bekletebilir miyim?') ve dönüşte teşekkür edilir; uzun sessizlikten kaçınılır; ses gelmezse 20 sn arayla 'Sesimi alabiliyor musunuz?' uyarısı yapılır.",
-          "Görüşmeye 3. şahıs sesi karıştığında güvenlik uyarısı yapılır; hattan düşen müşteriye mutlaka dış arama yapılır."
+        title: "Bekletme İzni, Dış Arama, Sessizlik, SMS & KMV",
+        tag: "Çağrı Standardı",
+        items: [
+          "Bekletme öncesi 'İşlemlerime devam edebilmem için sizleri çok kısa bir süre bekletebilir miyim?' denir, dönüşte teşekkür edilir; hattan düşen veya HOLD'da kopan müşteriye dış arama yapılır.",
+          "3. şahıs sesi geldiğinde güvenlik uyarısı yapılır; ses gelmezse 20 sn arayla 'Sesimi alabiliyor musunuz?' uyarısı yapılır; Cep İmza süresi 180 saniyedir.",
+          "Bankomat kart şifresinde SMS formatı paylaşılır; kıymetli maden alımlarında MİM Bilgi 280 kapsamında KMV'nin binde iki (%0,2) olduğu belirtilir."
         ]
       }
     ];
 
-    const QUIZ_QUESTIONS = [
+    const QUIZ_BANK = [
       {
-        id: 1, category: "TRANSFER", agentRef: "Alican Gün / Mahsum Akman / Rahime Şahin",
-        question: "Müşterinin günlük para transfer limitini güncelledikten sonra hangi 3 ekranın kontrol edilmesi zorunludur?",
-        options: [
-          "Yetki Detay (Yetki Ayarları), Hesap İşlem Türü ve Hesap Blokesi",
-          "Vadesiz Hareketler, Dekont Sorgulama ve Müşteri Memo Notu",
-          "Kredi Kartı Ekstre, Sanal Kart Limiti ve Otomatik Talimat",
-          "Giden EFT Listesi, Şube Kodu Ekranı ve HGS Bakiye Ekranı"
+        id: 1, cat: "TRANSFER",
+        q: "Para transfer limiti güncellendikten sonra hangi 3 ekranın kontrol edilmesi zorunludur?",
+        opts: [
+          "Yetki Detay / Yetki Ayarları, Hesap İşlem Türü ve Hesap Blokesi",
+          "Vadesiz Hareketler, Dekont Ekranı ve Memo Notu",
+          "Kredi Kartı Ekstre, Sanal Kart ve Talimat Ekranı",
+          "Giden EFT Listesi, Şube Kodu ve HGS Ekranı"
         ],
-        correct: 0,
-        rationale: "Para transfer limit güncellemesi sonrasında 'Yetki Detay / Yetki Ayarları' (sayfanın sonuna kadar indirilerek), 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranlarının kontrol edilmesi zorunludur."
+        ans: 0,
+        why: "Para transfer limit güncellemesi sonrası 'Yetki Detay / Yetki Ayarları' (en alta kadar kaydırılarak), 'Hesap İşlem Türü' ve 'Hesap Blokesi' ekranlarının kontrol edilmesi zorunludur."
       },
       {
-        id: 2, category: "BLOKE_KART", agentRef: "Elif Abay / Büşra Çetin / Seyfettin Gün",
-        question: "Müşteri kartının kaybolduğunu belirttiğinde ve kart ekranda açık göründüğünde doğru uygulama nedir?",
-        options: [
-          "Temsilci kendi ekranından kartı iptal edip çağrıyı sonlandırır",
+        id: 2, cat: "BLOKE_KART",
+        q: "Müşteri kartının kaybolduğunu söylediğinde ve kart ekranda açık göründüğünde doğru uygulama nedir?",
+        opts: [
+          "Temsilci kendi ekranından kartı iptal edip çağrıyı kapatır",
           "Bekletmeden Kayıp/Çalıntı birimine aktarılır",
-          "Önce kredi kartı vade tarihi sorulup hesap kapatılır",
-          "Müşteriye şubeye gitmesi söylenerek işlem bırakılır"
+          "Müşteriye şubeye gitmesi söylenip işlem yapılmaz",
+          "Önce kredi kartı borcu sorgulanıp vadesiz hesap kapatılır"
         ],
-        correct: 1,
-        rationale: "Kayıp/çalıntı kart bildirimlerinde kart normal iptal ekranından kapatılmamalı; güvenlik ve risk yönetimi gereği bekletmeden Kayıp/Çalıntı birimine aktarılmalıdır."
+        ans: 1,
+        why: "Kayıp/çalıntı kart bildirimlerinde normal iptal ekranı yerine bekletmeden Kayıp/Çalıntı birimine aktarım yapılmalıdır."
       },
       {
-        id: 3, category: "BLOKE_KART", agentRef: "Büşra Çetin / Edibe Demir",
-        question: "İcra dairesi kaynaklı blokede borcunu ödeyen müşteriye blokenin kaldırılmasıyla ilgili hangi bilgi verilmelidir?",
-        options: [
-          "İlgili kurum ödemeyi gördüğü an blokeyi otomatik kaldırır",
-          "Borç kapatıldıktan sonra blokeyi kurum değil, ilgili şube kaldırır",
-          "Bloke tutarı ve borç tutarı aynıdır, mobilden kaldırılabilir",
-          "Bloke hiçbir şekilde kaldırılmaz, yeni hesap açılmalıdır"
+        id: 3, cat: "BLOKE_KART",
+        q: "İcra/kurum blokesi bulunan ve borcunu ödeyen müşteriye blokenin kaldırılmasıyla ilgili ne söylenmelidir?",
+        opts: [
+          "Kurum ödemeyi gördüğü an blokeyi otomatik kaldırır",
+          "Borç ödemesi sonrası blokeyi kurum değil, ilgili şube kaldırır",
+          "Bloke tutarı ile borç tutarı aynıdır, mobilden kaldırılır",
+          "Bloke süresiz kalkmaz"
         ],
-        correct: 1,
-        rationale: "Hesap blokeleri kurum tarafından kaldırılmaz; borç ödemesi sonrası şube tarafından kaldırılır ve bloke tutarı ile borç tutarı aynı değildir."
+        ans: 1,
+        why: "Hesap blokeleri kurum tarafından kaldırılmaz; borç kapatıldıktan sonra şube tarafından kaldırılır ve bloke tutarı ile borç tutarı aynı değildir."
       },
       {
-        id: 4, category: "BLOKE_KART", agentRef: "Edibe Demir / Mahsum Akman",
-        question: "SIM kart blokesini kaldırmak isteyen müşteriye hangi bilgi verilmelidir?",
-        options: [
-          "Yalnızca şubeye gidilerek kaldırılabilir",
-          "Yalnızca ATM üzerinden kaldırılabilir",
-          "Tüm kaldırma kanalları (Şube, ATM, Mobil/İnternet/MİM vb.) eksiksiz paylaşılır",
-          "Çağrı merkezinden şifre tuşlanarak anında açılır"
+        id: 4, cat: "ILETISIM_ONAY",
+        q: "Görüşme sırasında 3. şahıs sesi duyulduğunda temsilci ne yapmalıdır?",
+        opts: [
+          "Görüşme akışını bozmadan devam eder",
+          "Müşteriye güvenlik uyarısında bulunur",
+          "Çağrıyı beklemeden sonlandırır",
+          "Müşterinin adını tekrar sorar"
         ],
-        correct: 2,
-        rationale: "SIM kart bloke kaldırma süreçlerinde yalnızca şube veya ATM saymak eksik bilgidir; tüm kaldırma kanalları müşteriye eksiksiz aktarılmalıdır."
+        ans: 1,
+        why: "Çağrıya 3. şahıs kişilerin sesi yansıdığında müşteri güvenliği için zorunlu güvenlik uyarısı yapılmalıdır."
       },
       {
-        id: 5, category: "ONAY_ILETISIM", agentRef: "Leyla Çetin / Aycan Emer / Alican Gün",
-        question: "Dijital şifre gönderimi veya limit/e-posta değişikliği gibi işlemlerde temel onay kuralı nedir?",
-        options: [
-          "Hız kazanmak için müşteri onayını beklemeden işlem tamamlanabilir",
-          "Müşteriden açık onay alınmadan işlem yapılmamalı, onay ekranı görülmeden 'tamamlandı' denmemelidir",
-          "Yalnızca tutar 100.000 TL üzerindeyse onay alınır",
-          "Eski e-posta silinirken onay gerekmez, sonra bilgi verilir"
-        ],
-        correct: 1,
-        rationale: "Onaysız işlem yapılmamalı; dijital şifre işlemlerinde 'SMS ile bildirilsin' kutucuğu işaretlenmeli ve onay ekranı gelmeden 'işleminizi gerçekleştirdim' denmemelidir."
-      },
-      {
-        id: 6, category: "ONAY_ILETISIM", agentRef: "Esra Özü Çalışır / Muhammed Yusuf Kılıç",
-        question: "Ek hesabını kapatmak isteyen müşteride hangi ekran veya prosedür izlenmelidir?",
-        options: [
-          "'Otomatik Limit Artırım' ekranından limit artışı iptal edilir",
-          "'Vadesiz Hesap Kapat' ekranından işlem denenip hata verirse kart iptal skiline aktarılır",
-          "İlgili ek hesap kapatma ekranından işlem yürütülür ve sonuç kontrol edilir",
-          "Sadece şubeden kapatılabilir denerek görüşme sonlandırılır"
-        ],
-        correct: 2,
-        rationale: "Ek hesap kapatma talepleri 'Otomatik Limit Artırım' veya 'Vadesiz Hesap Kapat' gibi yanlış ekranlardan değil, ilgili ek hesap kapama menüsünden yürütülmelidir."
-      },
-      {
-        id: 7, category: "TRANSFER", agentRef: "Elif Çelebioğlu / Sadettin Erdem / Menice Esmer",
-        question: "Müşterinin gönderdiği EFT/FAST transferinin karşıya ulaşmadığı belirtildiğinde hangi kontrol yapılmalıdır?",
-        options: [
-          "Sadece vadesiz hesap hareketlerine bakılıp 'diğer bankanın sorumluluğunda' denir",
-          "Sorgu numarası ile Giden EFT/FAST menüsü ve ilgili ekranlar kontrol edilir; bekleyen işlem varsa hızlandırma talebi iletilir",
-          "Müşteriden transferi tekrar göndermesi istenir",
-          "Doğrudan kredi kartı hareketleri kontrol edilir"
-        ],
-        correct: 1,
-        rationale: "Ulaşmayan para transferlerinde son işlemlerle yetinilmemeli; sorgu numarasıyla Giden EFT/FAST ekranı ve hesap blokesi kontrol edilmeli, bekleyen işlemlerde hızlandırma talebi açılmalıdır."
-      },
-      {
-        id: 8, category: "TRANSFER", agentRef: "Leyla Çetin / Nurşan Güner",
-        question: "Mobil bankacılık para transfer limiti ve kıymetli maden işlem limitiyle ilgili doğru bilgi hangisidir?",
-        options: [
-          "Mobilden en fazla 1,5 milyon TL güncellenebilir; kıymetli maden limiti gün boyu 50.000 TL'dir",
-          "Mobilden 2 milyon TL'ye kadar güncelleme yapılabilir; kıymetli maden üst limiti (5.500.500 TL) mesai içi içindir, mesai dışı 50.000 TL'dir",
-          "Mobilden limitsiz güncelleme yapılabilir; kıymetli maden alımında KMV yoktur",
-          "Mesai dışı kıymetli maden üst limiti 5.500.500 TL'dir"
-        ],
-        correct: 1,
-        rationale: "Mobil bankacılıkta para transfer limiti 2 milyon TL'ye kadar güncellenebilir; kıymetli maden 5.500.500 TL üst limiti mesai içi içindir, mesai dışında üst limit 50.000 TL'dir ve KMV binde ikidir."
-      },
-      {
-        id: 9, category: "BLOKE_KART", agentRef: "Hamza Akan / Nazlıcan Duman / Zehra Özer",
-        question: "Güvenlik aşamasını geçemeyen veya SMS formatı bekleyen müşteriye bankomat kart şifresi için hangi bilgi verilmelidir?",
-        options: [
-          "Şube ve ATM seçenekleriyle birlikte SMS ile şifre alma formatı da paylaşılır",
-          "Yalnızca mobil uygulamadan şifre alabileceği söylenir",
-          "Şifre verilemeyeceği söylenip çağrı sonlandırılır",
-          "Sadece kredi kartı şifresiyle işlem yapabileceği belirtilir"
-        ],
-        correct: 0,
-        rationale: "Bankomat kart şifresi taleplerinde şube ve ATM kanallarına ek olarak SMS ile şifre formatı da eksiksiz paylaşılmalıdır."
-      },
-      {
-        id: 10, category: "ONAY_ILETISIM", agentRef: "Muhammed Yusuf Kılıç / Mahsum Akman / Gül Bulut",
-        question: "Bekletme, sessizlik ve hattan düşen müşteriye yaklaşımda doğru uygulama hangisidir?",
-        options: [
-          "'Sizleri biraz bekleteceğim' denir ve müşteri düşerse beklenir",
-          "'Sizleri çok kısa bir süre bekletebilir miyim?' diye rica edilir, ara ara ses verilir, ses gelmezse 20 sn arayla uyarı yapılır ve hattan düşen müşteriye dış arama yapılır",
-          "1 dakika boyunca hiç ses vermeden işlem tamamlanır",
+        id: 5, cat: "ILETISIM_ONAY",
+        q: "Müşteriyi bekletmeye alırken ve hattan düşen müşteriye yaklaşımda doğru kural nedir?",
+        opts: [
+          "'Sizleri biraz bekleteceğim' denir; hattan düşen müşteri aranmaz",
+          "'Sizleri çok kısa bir süre bekletebilir miyim?' izni alınır, dönüşte teşekkür edilir; hattan düşen müşteriye dış arama yapılır",
+          "Uzun süre sessiz kalarak işlem bitirilir",
           "Müşteriye 'sesinizi alamazsam çağrıyı sonlandırabilirim' denir"
         ],
-        correct: 1,
-        rationale: "Bekletmede rica dili ('bekletebilir miyim?') ve dönüşte teşekkür kullanılır; sessizlikte 20 sn arayla 'Sesimi alabiliyor musunuz?' uyarısı yapılır ve hattan düşen müşteriye dış arama yapılır."
+        ans: 1,
+        why: "Bekletmede rica dili ('bekletebilir miyim?') ve dönüşte teşekkür kullanılır; hattan düşen veya HOLD'da kopan müşteriye dış arama yapılması zorunludur."
       },
       {
-        id: 11, category: "ONAY_ILETISIM", agentRef: "Hediye Anşin / Nazlıcan Duman / Leyla Tunç",
-        question: "Çağrı içi hitap, cep imza ve 3. şahıs sesi durumunda doğru yaklaşım nedir?",
-        options: [
-          "'Hocam' veya 'onaylamanız gerekiyor' denir; Cep İmza süresi 80 saniye olarak söylenir",
-          "Müşteriye ismiyle hitap edilir, 'Onaylayabilir misiniz?' ricası kullanılır, Cep İmza süresinin 180 saniye olduğu belirtilir ve 3. şahıs sesinde güvenlik uyarısı yapılır",
-          "3. şahıs sesi duyulsa da görüşme akışı bozulmadan devam edilir",
-          "Oturumu açık gelen müşterinin adı hiç sorulmaz veya hitap edilmez"
+        id: 6, cat: "BLOKE_KART",
+        q: "Bankomat kart şifre talebinde ve kıymetli maden alımında hangi kritik bilgiler paylaşılmalıdır?",
+        opts: [
+          "SMS formatı verilmez; KMV oranı yüzde 10 söylenir",
+          "Bankomat kart şifresi için SMS formatı paylaşılır; kıymetli maden alımlarında KMV'nin binde iki olduğu belirtilir",
+          "Yalnızca mobil şifre söylenip vergiden bahsedilmez",
+          "Cep İmza süresi 80 saniye olarak aktarılır"
         ],
-        correct: 1,
-        rationale: "Kurumsal hitap ve rica kipi esastır; Cep İmza süresi 180 saniyedir ve görüşmeye 3. şahıs sesi karıştığında güvenlik uyarısı yapılmalıdır."
+        ans: 1,
+        why: "Bankomat kart şifresinde şube/ATM ile birlikte SMS formatı paylaşılmalı; kıymetli maden alımlarında KMV'nin binde iki (%0,2) olduğu (ve Cep İmza süresinin 180 sn olduğu) doğru verilmelidir."
       },
       {
-        id: 12, category: "BLOKE_KART", agentRef: "Esra Özü Çalışır / Suzan Halil / Zehra Özer",
-        question: "Kurye yönlendirme ('0202' hatası), şubedeki kart teslimi ve vadeli hesap bitiş tarihi konularında hangisi doğrudur?",
-        options: [
-          "0202 hatasında talep açılmaz, şubedeki kart '1 hafta' kesin kalır, vadeli bitiş tarihi için Yatırım skiline aktarılır",
-          "0202 hatasında ilgili kurye yönlendirme talebi açılır, şubedeki kartta kesin '1 hafta' taahhüdü verilmez, vadeli hesap bitiş tarihi Vadeli Hesap Hareketleri ekranından verilir",
-          "Kurye yönlendirme onayı 'adresinizi güncelliyorum' şeklinde alınır",
-          "Kart teslim süresi tüm kanallarda 7–10 gündür"
+        id: 7, cat: "TRANSFER",
+        q: "Gönderilen EFT/FAST transferinin karşıya ulaşmadığı bildirildiğinde hangi kontrol yapılmalıdır?",
+        opts: [
+          "Sadece vadesiz hesap hareketlerine bakılıp 'diğer bankada' denir",
+          "Sorgu numarasıyla Giden EFT/FAST menüsü ve hesap blokesi kontrol edilir; bekleyen işlem varsa hızlandırma talebi iletilir",
+          "Müşteriden şubeye gitmesi istenir",
+          "İşlem iptal edilip tekrar gönderilir"
         ],
-        correct: 1,
-        rationale: "0202 kurye hatasında ilgili talep kaydı açılmalı, şubede kalma süresi için kesin '1 hafta' denmemeli (şube ort. 5 iş günü, adres ort. 15 iş günü) ve vadeli hesap vade bitiş tarihi Vadeli Hesap Hareketleri ekranından paylaşılmalıdır."
+        ans: 1,
+        why: "Ulaşmayan transferlerde sorgu numarasıyla Giden EFT/FAST ekranı ve ilgili ekranlar kontrol edilmeli, bekleyen işlem varsa hızlandırma talebi açılmalıdır."
+      },
+      {
+        id: 8, cat: "TRANSFER",
+        q: "Mobil bankacılık para transfer limiti ve kıymetli maden üst limiti hakkında doğru bilgi hangisidir?",
+        opts: [
+          "Mobilden 2 milyon TL'ye kadar güncelleme yapılabilir; kıymetli maden 5.500.500 TL üst limiti mesai içi içindir, mesai dışı 50.000 TL'dir",
+          "Mobilden en fazla 1 milyon TL güncellenebilir",
+          "Mesai dışı kıymetli maden limiti 5.500.500 TL'dir",
+          "Limit güncellemede müşteri onayı gerekmez"
+        ],
+        ans: 0,
+        why: "Mobilden 2 milyon TL'ye kadar transfer limiti güncellenebilir; kıymetli maden 5.500.500 TL sınırı mesai içi içindir, mesai dışı 50.000 TL'dir ve işlemler onaylı yapılmalıdır."
+      },
+      {
+        id: 9, cat: "BLOKE_KART",
+        q: "Dijital şifre gönderiminde onay ekranı ve SMS kutucuğu ile ilgili doğru uygulama nedir?",
+        opts: [
+          "Onay ekranı çıkmadan 'işleminizi gerçekleştirdim' denebilir",
+          "Müşteri onayı alınır, 'SMS ile dijital şifre bildirilsin' kutucuğu işaretlenir ve onay ekranı görülmeden 'gerçekleşti' denmez",
+          "SMS kutucuğu boş bırakılıp şubeden alması söylenir",
+          "Dijital şifresini unutan müşteride 'Bilinmiyor' seçeneği hiç kullanılmaz"
+        ],
+        ans: 1,
+        why: "Onaysız işlem yapılmamalı, 'SMS ile dijital şifre bildirilsin' kutucuğu işaretlenmeli ve onay ekranı çıkmadan işlem tamamlandı bilgisi verilmemelidir."
+      },
+      {
+        id: 10, cat: "ILETISIM_ONAY",
+        q: "Ek hesap kapatma talebinde hangi ekran kullanılmalıdır?",
+        opts: [
+          "'Otomatik Limit Artırım' ekranından limit artışı iptal edilir",
+          "İlgili ek hesap kapatma ekranından işlem yürütülür",
+          "'Vadesiz Hesap Kapat' ekranından kapatılıp kart iptal skiline aktarılır",
+          "Sadece şubeden kapatılır denip aktarma yapılır"
+        ],
+        ans: 1,
+        why: "Ek hesap kapatma işlemleri 'Otomatik Limit Artırım' veya 'Vadesiz Hesap Kapat' gibi yanlış ekranlardan değil, ilgili ek hesap kapatma ekranından yapılmalıdır."
+      },
+      {
+        id: 11, cat: "ILETISIM_ONAY",
+        q: "Çağrı içinde emir ifadesi ve hitap tarzı konusunda hangisi doğrudur?",
+        opts: [
+          "'Onaylamanız gerekiyor' ve 'hocam' ifadeleri standarttır",
+          "'Onaylayabilir misiniz?' gibi rica ifadeleri ve kurumsal hitap ('Hee, Hı hı' ve 'hocam' kullanılmadan) esastır",
+          "Oturumu açık müşteriye isimle hitap edilmez",
+          "Müşterinin sözü kesilerek işlem hızlandırılır"
+        ],
+        ans: 1,
+        why: "Emir cümleleri yerine rica ifadesi ('Onaylayabilir misiniz?') kullanılmalı; 'hocam' ve 'Hee, Hı hı' gibi ifadelerden kaçınılmalıdır."
+      },
+      {
+        id: 12, cat: "BLOKE_KART",
+        q: "SIM kart bloke kaldırma kanalları ve şubedeki kart teslim süresi için doğru bilgi hangisidir?",
+        opts: [
+          "SIM kart blokesi sadece ATM'den kalkar; şubedeki kart kesin '1 hafta' kalır",
+          "SIM kart bloke kaldırma kanalları eksiksiz paylaşılır; şubedeki kartta kesin '1 hafta' taahhüdü verilmez (şube ort. 5 iş günü, adres ort. 15 iş günü)",
+          "Kart teslim süresi tüm kanallarda 7–10 gündür",
+          "Kurye yönlendirme onayı 'adresinizi güncelliyorum' şeklinde alınır"
+        ],
+        ans: 1,
+        why: "SIM kart bloke kaldırma kanalları tam söylenmeli; şubede kart kalma süresi değişken olduğundan kesin '1 hafta' denmemeli ve teslimat süreleri (şube ort. 5 iş günü, adres ort. 15 iş günü) doğru aktarılmalıdır."
       }
     ];
 
-    let currentTopicFilter = 'ALL';
-    let quizFilter = 'ALL';
-    let activeQuestions = [...QUIZ_QUESTIONS];
-    let currentQIndex = 0;
-    let selectedOption = null;
-    let correctCount = 0;
-    let wrongCount = 0;
+    let selectedRepIndex = 0;
+    let currentGuideFilter = "ALL";
+    let currentQuizQuestions = [...QUIZ_BANK];
+    let qIndex = 0;
+    let answeredCurrent = false;
+    let scoreCorrect = 0;
+    let scoreWrong = 0;
+    let lastSummaryText = "";
 
-    function initApp() {
-      const select = document.getElementById('agentSelect');
-      AGENTS_DATA.forEach((ag, idx) => {
-        const opt = document.createElement('option');
+    function init() {
+      const sel = document.getElementById("repSelector");
+      REPRESENTATIVES.forEach((rep, idx) => {
+        const opt = document.createElement("option");
         opt.value = idx;
-        opt.textContent = `${idx + 1}. ${ag.name} (${ag.clean} Hatasız / ${ag.errors} Hatalı)`;
-        select.appendChild(opt);
+        opt.textContent = `${idx + 1}. ${rep.name}`;
+        sel.appendChild(opt);
       });
 
-      renderAgentDetail();
-      renderPlaybooks();
+      renderProcedures();
+      onRepresentativeChange();
       resetQuiz();
     }
 
-    function switchTab(tabName) {
-      ['explorer', 'playbooks', 'quiz'].forEach(t => {
-        document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tabName);
+    function switchTab(tab) {
+      ["guide", "procedures", "quiz"].forEach(t => {
+        document.getElementById(`view-${t}`).classList.toggle("hidden", t !== tab);
         const btn = document.getElementById(`tab-${t}`);
-        if (t === tabName) {
-          btn.classList.add('tab-active');
-          btn.classList.remove('text-slate-600');
+        if (t === tab) {
+          btn.classList.add("nav-tab-active");
+          btn.classList.remove("text-slate-600");
         } else {
-          btn.classList.remove('tab-active');
-          btn.classList.add('text-slate-600');
+          btn.classList.remove("nav-tab-active");
+          btn.classList.add("text-slate-600");
         }
       });
     }
 
-    function setTopicFilter(tag) {
-      currentTopicFilter = tag;
-      document.querySelectorAll('.topic-btn').forEach(btn => {
-        btn.classList.remove('bg-vbDark', 'text-vbYellow');
-        btn.classList.add('bg-slate-100', 'text-slate-700');
-      });
-      const activeBtn = document.getElementById(`filter-${tag}`);
-      activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
-      activeBtn.classList.add('bg-vbDark', 'text-vbYellow');
-      renderAgentDetail();
+    function onRepresentativeChange() {
+      selectedRepIndex = parseInt(document.getElementById("repSelector").value, 10) || 0;
+      const rep = REPRESENTATIVES[selectedRepIndex];
+
+      document.getElementById("activeRepBadge").textContent = `Temsilci: ${rep.name}`;
+      document.getElementById("quizSelectedRepName").textContent = rep.name;
+
+      const rate = ((rep.clean / rep.listened) * 100).toFixed(1);
+      document.getElementById("repQuickStats").innerHTML = `
+        <span class="bg-slate-100 text-vbNavy font-bold px-3 py-1.5 rounded-lg">Dinlenen: ${rep.listened}</span>
+        <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold px-3 py-1.5 rounded-lg">Hatasız: ${rep.clean} (%${rate})</span>
+        <span class="bg-red-50 text-red-800 border border-red-200 font-bold px-3 py-1.5 rounded-lg">Hatalı: ${rep.errors}</span>
+      `;
+
+      renderGuideCards();
     }
 
-    function renderAgentDetail() {
-      const idx = parseInt(document.getElementById('agentSelect').value, 10) || 0;
-      const agent = AGENTS_DATA[idx];
-      const successRate = ((agent.clean / agent.listened) * 100).toFixed(1);
-      const errorRate = ((agent.errors / agent.listened) * 100).toFixed(1);
+    function setGuideFilter(cat) {
+      currentGuideFilter = cat;
+      document.querySelectorAll(".gfilter-btn").forEach(b => {
+        b.classList.remove("bg-vbNavy", "text-vbGold");
+        b.classList.add("bg-slate-100", "text-vbNavy");
+      });
+      const active = document.getElementById(`gfilter-${cat}`);
+      active.classList.remove("bg-slate-100", "text-vbNavy");
+      active.classList.add("bg-vbNavy", "text-vbGold");
+      renderGuideCards();
+    }
 
-      document.getElementById('agentSummaryCard').innerHTML = `
-        <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <div class="text-xs font-bold text-slate-400 uppercase">Temsilci</div>
-          <div class="text-lg font-extrabold text-vbDark mt-1">${agent.name}</div>
-          <div class="text-xs text-slate-500 mt-0.5">Bankacılık Skili • ${agent.listened} Dinlenen Çağrı</div>
-        </div>
-        <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <div class="text-xs font-bold text-emerald-700 uppercase">Hatasız Çağrı</div>
-          <div class="text-2xl font-extrabold text-emerald-700 mt-1">${agent.clean} <span class="text-sm font-semibold">(%${successRate})</span></div>
-          <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
-            <div class="bg-emerald-600 h-full" style="width:${successRate}%"></div>
+    function renderGuideCards() {
+      const rep = REPRESENTATIVES[selectedRepIndex];
+      const filtered = rep.cases.filter(c => currentGuideFilter === "ALL" || c.cat === currentGuideFilter);
+      const container = document.getElementById("guideCardsContainer");
+
+      const headerBanner = `
+        <div class="bg-vbGoldSoft border border-amber-300 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="text-xs font-extrabold uppercase text-amber-900">Seçili Temsilci Odak Özeti</div>
+            <div class="text-sm font-bold text-vbNavy mt-0.5">${rep.name} — ${rep.focus}</div>
           </div>
-        </div>
-        <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <div class="text-xs font-bold text-red-700 uppercase">Hatalı Çağrı</div>
-          <div class="text-2xl font-extrabold text-red-700 mt-1">${agent.errors} <span class="text-sm font-semibold">(%${errorRate})</span></div>
-          <div class="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
-            <div class="bg-red-600 h-full" style="width:${errorRate}%"></div>
-          </div>
-        </div>
-        <div class="bg-vbYellowSoft rounded-xl border border-amber-300 p-4 shadow-sm">
-          <div class="text-xs font-bold text-amber-900 uppercase">Öncelikli Odak Alanı</div>
-          <div class="text-sm font-extrabold text-vbDark mt-1">${agent.topTopic}</div>
-          <div class="text-xs text-amber-800 mt-1">Hata ve doğru uygulama kartlarını inceleyin.</div>
+          <button onclick="switchTab('quiz')" class="bg-vbNavy hover:bg-vbNavyDark text-vbGold font-extrabold text-xs px-4 py-2 rounded-lg whitespace-nowrap transition">
+            Teste Geç →
+          </button>
         </div>
       `;
 
-      const filtered = agent.mistakes.filter(m => currentTopicFilter === 'ALL' || m.tag === currentTopicFilter);
-      const container = document.getElementById('agentMistakesContainer');
-
       if (!filtered.length) {
-        container.innerHTML = `
+        container.innerHTML = headerBanner + `
           <div class="bg-white rounded-xl border border-slate-200 p-6 text-center text-sm text-slate-600">
-            Seçili konu filtresinde <strong>${agent.name}</strong> için kayıtlı hata bulunmuyor.
-            <button onclick="setTopicFilter('ALL')" class="ml-2 font-bold text-vbDark underline">Tüm Konuları Göster</button>
+            Bu konu filtresinde <strong>${rep.name}</strong> için kayıtlı hata bulunmuyor.
+            <button onclick="setGuideFilter('ALL')" class="ml-2 font-bold text-vbNavy underline">Tüm Konuları Göster</button>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = filtered.map((m, i) => `
+      container.innerHTML = headerBanner + filtered.map((item, idx) => `
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
-            <span class="text-xs font-extrabold uppercase tracking-wide text-vbDark">
-              ${i + 1}. ${m.topic}
-            </span>
-            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-vbDark text-vbYellow">
-              Hata → Doğru Uygulama
-            </span>
+          <div class="bg-slate-50 px-4 py-2.5 border-b border-slate-200 flex items-center justify-between">
+            <span class="text-xs font-extrabold uppercase tracking-wide text-vbNavy">${idx + 1}. ${item.topic}</span>
+            <span class="text-[11px] font-bold bg-vbNavy text-vbGold px-2.5 py-0.5 rounded-full">Hata → Doğru Uygulama</span>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
             <div class="p-4 bg-red-50/40">
-              <div class="text-xs font-extrabold text-red-700 uppercase mb-1.5">✕ Yapılan Hata</div>
-              <p class="text-sm text-slate-800 leading-relaxed">${m.error}</p>
+              <div class="text-xs font-extrabold text-red-700 uppercase mb-1">✕ Çağrı Dinleme Hatası</div>
+              <p class="text-sm text-slate-800 leading-relaxed">${item.error}</p>
             </div>
             <div class="p-4 bg-emerald-50/50">
-              <div class="text-xs font-extrabold text-emerald-700 uppercase mb-1.5">✓ Doğru Uygulama</div>
-              <p class="text-sm text-slate-800 leading-relaxed font-medium">${m.fix}</p>
+              <div class="text-xs font-extrabold text-emerald-800 uppercase mb-1">✓ Doğru Prosedür / Uygulama</div>
+              <p class="text-sm text-slate-800 leading-relaxed font-medium">${item.correct}</p>
             </div>
           </div>
         </div>
-      `).join('');
+      `).join("");
     }
 
-    function goToAgentQuiz() {
-      if (currentTopicFilter !== 'ALL') {
-        document.getElementById('quizCategoryFilter').value = currentTopicFilter;
-      } else {
-        document.getElementById('quizCategoryFilter').value = 'ALL';
-      }
-      resetQuiz();
-      switchTab('quiz');
-    }
-
-    function renderPlaybooks() {
-      document.getElementById('playbooksGrid').innerHTML = PLAYBOOKS.map(pb => `
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between space-y-4">
-          <div>
-            <div class="flex items-start justify-between gap-2 mb-3">
-              <h3 class="text-sm font-extrabold text-vbDark">${pb.title}</h3>
-              <span class="text-[11px] font-bold bg-vbYellowSoft text-amber-900 border border-amber-300 px-2.5 py-0.5 rounded-full whitespace-nowrap">
-                ${pb.badge}
-              </span>
-            </div>
-            <ul class="space-y-2 text-sm text-slate-700">
-              ${pb.steps.map(s => `<li class="flex items-start gap-2"><span class="text-vbYellow font-extrabold">▸</span><span>${s}</span></li>`).join('')}
-            </ul>
+    function renderProcedures() {
+      document.getElementById("proceduresGrid").innerHTML = PROCEDURES.map(p => `
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+          <div class="flex items-start justify-between gap-2">
+            <h3 class="text-sm font-extrabold text-vbNavy">${p.title}</h3>
+            <span class="text-[11px] font-bold bg-vbGoldSoft text-amber-950 border border-amber-300 px-2.5 py-0.5 rounded-full whitespace-nowrap">
+              ${p.tag}
+            </span>
           </div>
+          <ul class="space-y-2 text-sm text-slate-700">
+            ${p.items.map(i => `<li class="flex items-start gap-2"><span class="text-vbGold font-black">•</span><span>${i}</span></li>`).join("")}
+          </ul>
         </div>
-      `).join('');
+      `).join("");
     }
 
     function resetQuiz() {
-      quizFilter = document.getElementById('quizCategoryFilter').value;
-      activeQuestions = quizFilter === 'ALL'
-        ? [...QUIZ_QUESTIONS]
-        : QUIZ_QUESTIONS.filter(q => q.category === quizFilter);
-      currentQIndex = 0;
-      selectedOption = null;
-      correctCount = 0;
-      wrongCount = 0;
-      document.getElementById('quizSummaryCard').classList.add('hidden');
-      document.getElementById('quizQuestionCard').classList.remove('hidden');
+      const cat = document.getElementById("quizTopicFilter").value;
+      currentQuizQuestions = cat === "ALL" ? [...QUIZ_BANK] : QUIZ_BANK.filter(q => q.cat === cat);
+      qIndex = 0;
+      answeredCurrent = false;
+      scoreCorrect = 0;
+      scoreWrong = 0;
+      lastSummaryText = "";
+
+      document.getElementById("quizResultBox").classList.add("hidden");
+      document.getElementById("quizQuestionBox").classList.remove("hidden");
       renderQuizQuestion();
-      updateQuizHeader();
+      updateQuizStatus();
     }
 
-    function updateQuizHeader() {
-      const total = activeQuestions.length;
-      const shownNum = Math.min(currentQIndex + 1, total);
-      document.getElementById('quizProgressText').textContent = `Soru ${shownNum} / ${total}`;
-      document.getElementById('quizScoreText').textContent = `Doğru: ${correctCount} | Yanlış: ${wrongCount}`;
-      const pct = total ? Math.round(((currentQIndex + (selectedOption !== null ? 1 : 0)) / total) * 100) : 0;
-      document.getElementById('quizProgressBar').style.width = `${pct}%`;
-      const answered = correctCount + wrongCount;
-      document.getElementById('headerProgressBadge').textContent =
-        answered > 0 ? `Test Skoru: ${correctCount} / ${answered}` : `Test Skoru: - / ${total}`;
+    function updateQuizStatus() {
+      const total = currentQuizQuestions.length;
+      const num = Math.min(qIndex + 1, total);
+      document.getElementById("quizStepLabel").textContent = `Soru ${num} / ${total}`;
+      document.getElementById("quizLiveStats").textContent = `Doğru: ${scoreCorrect} | Yanlış: ${scoreWrong}`;
+      const done = qIndex + (answeredCurrent ? 1 : 0);
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById("quizProgressFill").style.width = `${pct}%`;
+
+      const answeredTotal = scoreCorrect + scoreWrong;
+      document.getElementById("headerScoreBadge").textContent =
+        answeredTotal > 0 ? `Skor: ${scoreCorrect}/${answeredTotal}` : `Test: ${total} Soru`;
     }
 
     function renderQuizQuestion() {
-      const q = activeQuestions[currentQIndex];
-      const card = document.getElementById('quizQuestionCard');
-
-      card.innerHTML = `
+      const q = currentQuizQuestions[qIndex];
+      const box = document.getElementById("quizQuestionBox");
+      box.innerHTML = `
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-          <span class="text-xs font-bold bg-vbDark text-vbYellow px-3 py-1 rounded-full">
-            Soru ${currentQIndex + 1} • ${q.agentRef}
+          <span class="text-xs font-extrabold bg-vbNavy text-vbGold px-3 py-1 rounded-full">
+            Soru ${qIndex + 1} / ${currentQuizQuestions.length}
           </span>
-          <span class="text-xs font-semibold text-slate-500">Doğru cevabı seçerek pekiştirin</span>
+          <span class="text-xs font-semibold text-slate-500">Temsilci: ${REPRESENTATIVES[selectedRepIndex].name}</span>
         </div>
-
-        <h3 class="text-base sm:text-lg font-bold text-vbDark leading-snug">${q.question}</h3>
-
-        <div class="space-y-2.5" id="optionsList">
-          ${q.options.map((opt, idx) => `
+        <h3 class="text-base sm:text-lg font-extrabold text-vbNavy leading-snug">${q.q}</h3>
+        <div class="space-y-2.5">
+          ${q.opts.map((opt, idx) => `
             <button
-              onclick="selectAnswer(${idx})"
-              id="opt-btn-${idx}"
-              class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-vbYellow hover:bg-vbYellowSoft/50 transition flex items-start gap-3 text-sm font-medium text-slate-800"
+              id="qopt-${idx}"
+              onclick="handleQuizAnswer(${idx})"
+              class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-vbGold hover:bg-vbGoldSoft/50 transition flex items-start gap-3 text-sm font-medium text-slate-800"
             >
-              <span class="w-6 h-6 rounded-full bg-slate-100 text-vbDark font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
-                ${['A', 'B', 'C', 'D'][idx]}
+              <span class="w-6 h-6 rounded-full bg-slate-100 text-vbNavy font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                ${["A", "B", "C", "D"][idx]}
               </span>
               <span>${opt}</span>
             </button>
-          `).join('')}
+          `).join("")}
         </div>
-
-        <div id="feedbackBox" class="hidden rounded-xl p-4 border text-sm space-y-2"></div>
-
+        <div id="qFeedback" class="hidden rounded-xl p-4 border text-sm space-y-1"></div>
         <div class="flex justify-end pt-2">
           <button
-            id="nextQuestionBtn"
-            onclick="nextQuestion()"
+            id="qNextBtn"
+            onclick="advanceQuiz()"
             disabled
-            class="bg-vbDark disabled:opacity-40 text-vbYellow font-extrabold text-sm px-5 py-2.5 rounded-lg transition"
+            class="bg-vbNavy disabled:opacity-40 hover:bg-vbNavyDark text-vbGold font-extrabold text-sm px-5 py-2.5 rounded-lg transition"
           >
-            ${currentQIndex + 1 === activeQuestions.length ? 'Sonucu Gör' : 'Sonraki Soru →'}
+            ${qIndex + 1 === currentQuizQuestions.length ? "Testi Tamamla ve Kaydet" : "Sonraki Soru →"}
           </button>
         </div>
       `;
     }
 
-    function selectAnswer(idx) {
-      if (selectedOption !== null) return;
-      selectedOption = idx;
-      const q = activeQuestions[currentQIndex];
-      const isCorrect = idx === q.correct;
+    function handleQuizAnswer(idx) {
+      if (answeredCurrent) return;
+      answeredCurrent = true;
+      const q = currentQuizQuestions[qIndex];
+      const isRight = idx === q.ans;
 
-      if (isCorrect) correctCount++;
-      else wrongCount++;
+      if (isRight) scoreCorrect++;
+      else scoreWrong++;
 
-      q.options.forEach((_, i) => {
-        const btn = document.getElementById(`opt-btn-${i}`);
+      q.opts.forEach((_, i) => {
+        const btn = document.getElementById(`qopt-${i}`);
         btn.disabled = true;
-        btn.classList.remove('hover:border-vbYellow', 'hover:bg-vbYellowSoft/50');
-        if (i === q.correct) {
-          btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-950', 'font-bold');
-        } else if (i === idx && !isCorrect) {
-          btn.classList.add('bg-red-50', 'border-red-500', 'text-red-950');
+        btn.classList.remove("hover:border-vbGold", "hover:bg-vbGoldSoft/50");
+        if (i === q.ans) {
+          btn.classList.add("bg-emerald-50", "border-emerald-500", "text-emerald-950", "font-bold");
+        } else if (i === idx && !isRight) {
+          btn.classList.add("bg-red-50", "border-red-500", "text-red-950");
         } else {
-          btn.classList.add('opacity-60');
+          btn.classList.add("opacity-60");
         }
       });
 
-      const fb = document.getElementById('feedbackBox');
-      fb.classList.remove('hidden');
-      if (isCorrect) {
-        fb.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-900');
-        fb.innerHTML = `<div class="font-extrabold">✓ Doğru! Pekiştirme Açıklaması:</div><p>${q.rationale}</p>`;
+      const fb = document.getElementById("qFeedback");
+      fb.classList.remove("hidden");
+      if (isRight) {
+        fb.classList.add("bg-emerald-50", "border-emerald-300", "text-emerald-900");
+        fb.innerHTML = `<div class="font-extrabold">✓ Doğru Yanıt</div><p>${q.why}</p>`;
       } else {
-        fb.classList.add('bg-red-50', 'border-red-300', 'text-red-900');
-        fb.innerHTML = `<div class="font-extrabold">✕ Hatalı Seçim — Doğru Uygulama:</div><p>${q.rationale}</p>`;
+        fb.classList.add("bg-red-50", "border-red-300", "text-red-900");
+        fb.innerHTML = `<div class="font-extrabold">✕ Hatalı Yanıt — Doğru Prosedür:</div><p>${q.why}</p>`;
       }
 
-      document.getElementById('nextQuestionBtn').disabled = false;
-      updateQuizHeader();
+      document.getElementById("qNextBtn").disabled = false;
+      updateQuizStatus();
     }
 
-    function nextQuestion() {
-      if (currentQIndex + 1 < activeQuestions.length) {
-        currentQIndex++;
-        selectedOption = null;
+    function advanceQuiz() {
+      if (qIndex + 1 < currentQuizQuestions.length) {
+        qIndex++;
+        answeredCurrent = false;
         renderQuizQuestion();
-        updateQuizHeader();
+        updateQuizStatus();
       } else {
-        showQuizSummary();
+        finishAndSubmitQuiz();
       }
     }
 
-    function showQuizSummary() {
-      document.getElementById('quizQuestionCard').classList.add('hidden');
-      const total = activeQuestions.length;
-      const pct = Math.round((correctCount / total) * 100);
-      const summary = document.getElementById('quizSummaryCard');
-      summary.classList.remove('hidden');
+    async function finishAndSubmitQuiz() {
+      document.getElementById("quizQuestionBox").classList.add("hidden");
+      const rep = REPRESENTATIVES[selectedRepIndex];
+      const total = currentQuizQuestions.length;
+      const puan = total ? Math.round((scoreCorrect / total) * 100) : 0;
+      const tarihStr = new Date().toLocaleString("tr-TR");
 
-      summary.innerHTML = `
-        <div class="inline-block bg-vbYellow text-vbDark font-extrabold text-xs px-3 py-1 rounded-full uppercase">
-          Pekiştirme Testi Tamamlandı
+      lastSummaryText =
+        `VakıfBank Çağrı Kalite Testi | Tarih: ${tarihStr} | Temsilci: ${rep.name} | ` +
+        `Doğru: ${scoreCorrect} | Yanlış: ${scoreWrong} | Puan: ${puan}`;
+
+      const resBox = document.getElementById("quizResultBox");
+      resBox.classList.remove("hidden");
+      resBox.innerHTML = `
+        <div class="text-center space-y-2">
+          <span class="inline-block bg-vbGold text-vbNavy font-extrabold text-xs px-3 py-1 rounded-full uppercase">
+            Test Tamamlandı
+          </span>
+          <h3 class="text-2xl font-black text-vbNavy">${rep.name} — Puan: ${puan} / 100</h3>
+          <p class="text-sm text-slate-600">
+            Toplam <strong>${total}</strong> soruda <strong class="text-emerald-700">${scoreCorrect} Doğru</strong>,
+            <strong class="text-red-700">${scoreWrong} Yanlış</strong>
+          </p>
         </div>
-        <h3 class="text-2xl font-extrabold text-vbDark">Başarı Oranınız: %${pct}</h3>
-        <p class="text-sm text-slate-600 max-w-xl mx-auto">
-          Toplam <strong>${total}</strong> sorunun <strong>${correctCount}</strong> tanesini doğru yanıtladınız, <strong>${wrongCount}</strong> soruda tekrar gözden geçirilmesi gereken nokta bulunuyor.
-        </p>
-        <div class="flex flex-wrap justify-center gap-3 pt-2">
-          <button onclick="resetQuiz()" class="bg-vbDark text-vbYellow font-extrabold text-sm px-5 py-2.5 rounded-lg">
+
+        <div id="sheetsSubmitStatus" class="rounded-xl p-3.5 text-sm font-bold text-center bg-slate-100 text-vbNavy border border-slate-200">
+          Sonuç Google E-Tablolar'a gönderiliyor...
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs text-slate-700 font-mono break-all" id="summaryTextPreview">
+          ${lastSummaryText}
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-1">
+          <button onclick="copySummaryResult()" class="bg-vbGold hover:bg-amber-400 text-vbNavy font-extrabold text-sm px-5 py-2.5 rounded-lg transition">
+            Sonucu Kopyala
+          </button>
+          <button onclick="resetQuiz()" class="bg-vbNavy hover:bg-vbNavyDark text-white font-bold text-sm px-5 py-2.5 rounded-lg transition">
             Testi Tekrar Çöz
           </button>
-          <button onclick="switchTab('explorer')" class="bg-slate-100 hover:bg-slate-200 text-vbDark font-bold text-sm px-5 py-2.5 rounded-lg">
-            Temsilci Hatalarına Dön
+          <button onclick="switchTab('guide')" class="bg-slate-200 hover:bg-slate-300 text-vbNavy font-bold text-sm px-5 py-2.5 rounded-lg transition">
+            Hata Rehberine Dön
           </button>
         </div>
+        <div id="copyToast" class="hidden text-center text-xs font-bold text-emerald-700"></div>
       `;
+
+      // Google Apps Script Web Uygulamasına otomatik POST gönderimi
+      try {
+        await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            temsilci: rep.name,
+            dogru: scoreCorrect,
+            yanlis: scoreWrong,
+            puan: puan
+          })
+        });
+
+        const statusEl = document.getElementById("sheetsSubmitStatus");
+        if (statusEl) {
+          statusEl.className = "rounded-xl p-3.5 text-sm font-extrabold text-center bg-emerald-50 text-emerald-800 border border-emerald-300";
+          statusEl.textContent = "Sonuç Google E-Tablolar'a gönderildi";
+        }
+      } catch (err) {
+        const statusEl = document.getElementById("sheetsSubmitStatus");
+        if (statusEl) {
+          statusEl.className = "rounded-xl p-3.5 text-sm font-extrabold text-center bg-red-50 text-red-800 border border-red-300";
+          statusEl.textContent = "Otomatik gönderimde ağ hatası oluştu; lütfen 'Sonucu Kopyala' butonu ile paylaşın.";
+        }
+      }
     }
 
-    initApp();
+    function copySummaryResult() {
+      const toast = document.getElementById("copyToast");
+      try {
+        const tempInput = document.createElement("textarea");
+        tempInput.value = lastSummaryText;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+
+        if (toast) {
+          toast.classList.remove("hidden");
+          toast.className = "text-center text-xs font-bold text-emerald-700";
+          toast.textContent = "Test özeti panoya kopyalandı.";
+        }
+      } catch (e) {
+        if (toast) {
+          toast.classList.remove("hidden");
+          toast.className = "text-center text-xs font-bold text-red-700";
+          toast.textContent = "Kopyalama yapılamadı; yukarıdaki özet metni manuel seçip kopyalayabilirsiniz.";
+        }
+      }
+    }
+
+    init();
   </script>
 </body>
 </html>
